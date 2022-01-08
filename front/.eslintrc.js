@@ -12,7 +12,13 @@ module.exports = {
     es6: true,
   },
   plugins: ['prettier', '@typescript-eslint'],
-  extends: ['plugin:import/errors', 'plugin:import/warnings', 'plugin:prettier/recommended'],
+  extends: [
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    'plugin:prettier/recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:@typescript-eslint/recommended',
+  ],
   settings: {
     'import/resolver': {
       node: {
@@ -37,5 +43,6 @@ module.exports = {
     'react/jsx-props-no-spreading': 0,
     'eslint-disable-next-line': 0,
     'react-hooks/exhaustive-deps': 0,
+    '@typescript-eslint/explicit-function-return-type': 0,
   },
 }
