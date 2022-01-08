@@ -11,7 +11,7 @@ const GlobalStyle = createGlobalStyle`
   table {border-collapse:collapse;border-spacing:0}
   body {-webkit-text-size-adjust:none}
   input:checked[type=checkbox] {background-color:#666;-webkit-appearance:checkbox}
-  html input[type=button], input[type=email], input[type=password], input[type=reset], input[type=search], input[type=submit], input[type=tel], input[type=text] {-webkit-appearance:none;border-radius:0}
+  html, input {-webkit-appearance:none;border-radius:0}
   input[type=search]::-webkit-search-cancel-button {-webkit-appearance:none}
   body {background:var(--baseBackground)}
   body, button, input, select, td, textarea, th {
