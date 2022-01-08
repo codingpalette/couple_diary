@@ -1,9 +1,10 @@
 import React from 'react'
+import { Content } from './styles'
 
 const MainPage = () => {
   return (
     <>
-      <div>MainPage</div>
+      <Content>MainPage</Content>
     </>
   )
 }
