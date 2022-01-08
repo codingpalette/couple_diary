@@ -1,7 +1,10 @@
 from typing import Optional
-
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from routes import user
+from starlette.middleware.base import BaseHTTPMiddleware
+from fastapi.middleware.cors import CORSMiddleware
+from middlewares.auth_check import access_control
 
 
 class SPAStaticFiles(StaticFiles):
@@ -15,6 +18,21 @@ def create_app():
 
     app = FastAPI()
 
+    origins = [
+        'http://localhost:3000'
+    ]
+
+    app.add_middleware(middleware_class=BaseHTTPMiddleware, dispatch=access_control)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+
+
     @app.get("/test")
     def read_root():
         return {"Hello": "World"}
@@ -24,6 +42,8 @@ def create_app():
     def read_item(item_id: int, q: Optional[str] = None):
         return {"item_id": item_id, "q": q}
 
+
+    app.include_router(user.router, tags=["user"], prefix="/api")
 
     app.mount("/", SPAStaticFiles(directory="public", html=True), name="public")
 
