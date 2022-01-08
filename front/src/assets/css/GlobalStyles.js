@@ -30,6 +30,9 @@ const GlobalStyle = createGlobalStyle`
 `
 
 export const colors = {
+  White: '#fff',
+  Black: '#000',
+
   Slate_50: '#f8fafc',
   Slate_100: '#f1f5f9',
   Slate_200: '#e2e8f0',
