@@ -24,3 +24,5 @@ archive.zip
 
 back/public
 back/.config
+
+.env
