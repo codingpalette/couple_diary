@@ -13,14 +13,16 @@ export const HeaderBox = styled.div`
 `
 
 export const HeaderTag = styled.header`
-  max-width: 1024px;
+  max-width: 600px;
   width: 100%;
   height: 60px;
   margin: 0 auto;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  box-sizing: border-box;
 `
 
 export const BackLink = styled(Link)`
