@@ -2,7 +2,7 @@ import { toast } from 'react-toastify'
 
 export const ErrorMessageOpen = (msg: string) => {
   toast.error(msg, {
-    position: 'top-left',
+    position: 'top-right',
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,
@@ -14,7 +14,7 @@ export const ErrorMessageOpen = (msg: string) => {
 
 export const SuccessMessageOpen = (msg: string) => {
   toast.success(msg, {
-    position: 'top-left',
+    position: 'top-right',
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,
