@@ -11,13 +11,15 @@ export const HeaderBox = styled.div`
 `
 
 export const HeaderTag = styled.header`
-  max-width: 1024px;
+  max-width: 600px;
   width: 100%;
   height: 60px;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0 20px;
+  box-sizing: border-box;
 
   .button_box a {
     color: ${colors.Gray_400};
