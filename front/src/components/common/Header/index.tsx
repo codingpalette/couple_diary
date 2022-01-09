@@ -96,6 +96,10 @@ const Header = () => {
     [mode, email, name, password, passwordCheck],
   )
 
+  if (!userData) {
+    return null
+  }
+
   return (
     <>
       <HeaderBox>
@@ -105,7 +109,7 @@ const Header = () => {
           </div>
           <div className="button_box">
             {userData ? (
-              <Link to="/">
+              <Link to="/menu">
                 <FontAwesomeIcon icon={faUserCircle} size="2x" />
               </Link>
             ) : (
