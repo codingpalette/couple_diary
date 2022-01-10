@@ -8,7 +8,7 @@ const MenuPage = () => {
     <>
       <SubHeader />
       <MainContainer>
-        <MenuList href="/" icon="📬">
+        <MenuList href="/write" icon="📬">
           다이어리 만들기
         </MenuList>
         <MenuList href="/" icon="📚">

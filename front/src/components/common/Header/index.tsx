@@ -96,9 +96,9 @@ const Header = () => {
     [mode, email, name, password, passwordCheck],
   )
 
-  if (!userData) {
-    return null
-  }
+  // if (!userData) {
+  //   return null
+  // }
 
   return (
     <>
