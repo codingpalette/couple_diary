@@ -63,6 +63,19 @@ class User():
             # print(e)
             raise HTTPException(status_code=500,  detail={"result": "fail", "message": "서버에 문제가 발생했습니다."})
 
+    async def get_refresh_token(refresh_token):
+        try:
+            conn = await basic()
+            curs = conn.cursor(pymysql.cursors.DictCursor)
+            sql = '''SELECT name, level, refresh_token FROM user WHERE refresh_token = %s;'''
+            curs.execute(sql, refresh_token)
+            data = curs.fetchone()
+            conn.close()
+            return data
+        except Exception as e:
+            # print(e)
+            raise HTTPException(status_code=500,  detail={"result": "fail", "message": "서버에 문제가 발생했습니다."})
+
 
     async def user_logout(token):
         try:
