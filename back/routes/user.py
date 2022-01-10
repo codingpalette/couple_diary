@@ -39,11 +39,13 @@ def user_get():
 def user_check(request: Request):
     config = conf()
     key = config['TOKEN_KEY']
-    cookies = request.cookies
-    access_token = cookies.get("access_token")
+    access_token = request.state.access_token
+
     decode = jwt.decode(access_token, key, algorithms=['HS256'])
-    # print('decode', decode)
-    return {"result": "success", "message": "유저인증에 성공했습니다.", "data": {"email": decode['email'], "level": decode["level"] }}
+    content = {"result": "success", "message": "유저인증에 성공했습니다.", "data": {"email": decode['email'], "name": decode['name'], "level": decode["level"] }}
+    response = JSONResponse(content=content)
+    response.set_cookie(key="access_token", value=access_token)
+    return response
 
 
 

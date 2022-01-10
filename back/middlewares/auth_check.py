@@ -21,10 +21,11 @@ async def access_control(request: Request, call_next):
 
                 return JSONResponse(status_code=401, content={"result": "fail", "message": "인증실패"})
             else:
-                # return JSONResponse(status_code=401, content={"result": "fail", "message": "1111"})
-                response = await call_next(request)
-                response.set_cookie(key="access_token", value=token_check)
-                return response
+                request.state.access_token = token_check
+                return await call_next(request)
+                # response.set_cookie(key="access_token", value=token_check)
+                # print('end')
+                # return response
         else:
             response = await call_next(request)
             return response

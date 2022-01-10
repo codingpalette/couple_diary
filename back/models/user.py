@@ -67,7 +67,7 @@ class User():
         try:
             conn = await basic()
             curs = conn.cursor(pymysql.cursors.DictCursor)
-            sql = '''SELECT name, level, refresh_token FROM user WHERE refresh_token = %s;'''
+            sql = '''SELECT email, name, level, refresh_token FROM user WHERE refresh_token = %s;'''
             curs.execute(sql, refresh_token)
             data = curs.fetchone()
             conn.close()
