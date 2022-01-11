@@ -19,7 +19,7 @@ async def access_control(request: Request, call_next):
             token_check = await token.token_check(access_token, refresh_token)
             if not token_check:
 
-                return JSONResponse(status_code=401, content={"result": "fail", "message": "인증실패"})
+                return JSONResponse(status_code=201, content={"result": "fail", "message": "인증실패"})
             else:
                 request.state.access_token = token_check
                 return await call_next(request)

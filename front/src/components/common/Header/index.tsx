@@ -96,10 +96,6 @@ const Header = () => {
     [mode, email, name, password, passwordCheck],
   )
 
-  // if (!userData) {
-  //   return null
-  // }
-
   return (
     <>
       <HeaderBox>
@@ -107,15 +103,17 @@ const Header = () => {
           <div className="logo">
             <Link to="/">로고</Link>
           </div>
-          <div className="button_box">
-            {userData ? (
-              <Link to="/menu">
-                <FontAwesomeIcon icon={faUserCircle} size="2x" />
-              </Link>
-            ) : (
-              <Button onClick={onClickModalOpen}>로그인</Button>
-            )}
-          </div>
+          {userData && (
+            <div className="button_box">
+              {userData && userData.result === 'success' ? (
+                <Link to="/menu">
+                  <FontAwesomeIcon icon={faUserCircle} size="2x" />
+                </Link>
+              ) : (
+                <Button onClick={onClickModalOpen}>로그인</Button>
+              )}
+            </div>
+          )}
         </HeaderTag>
       </HeaderBox>
       <ModalContainer isActive={isActive} closeEvent={onClickModalClose} maxWidth="400px">
