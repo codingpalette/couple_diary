@@ -7,12 +7,13 @@ export type InputProps = {
   id?: string
   type: string
   placeholder: string
+  disabled?: boolean
 }
 
-const Input = ({ value, onChange, id, type, placeholder }: InputProps) => {
+const Input = ({ value, onChange, id, type, placeholder, disabled }: InputProps) => {
   return (
     <>
-      <InputTag value={value} onChange={onChange} id={id} type={type} placeholder={placeholder} />
+      <InputTag value={value} onChange={onChange} id={id} type={type} placeholder={placeholder} disabled={disabled} />
     </>
   )
 }
@@ -20,6 +21,7 @@ const Input = ({ value, onChange, id, type, placeholder }: InputProps) => {
 Input.defaultProps = {
   type: 'text',
   placeholder: '',
+  disabled: false,
 }
 
 export default Input
