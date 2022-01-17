@@ -1,8 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import MapContainer from '../../containers/MapContainer'
-import { ControllerBox } from './styles'
+import { CardInputGroup, ControllerBox } from './styles'
 import Button from '../../components/common/Button'
 import DaumPostcode from 'react-daum-postcode'
+import ModalContainer from '../../containers/ModalContainer'
+import Card from '../../components/common/Card'
+import useInput from '../../hooks/useInput'
+import Input from '../../components/common/Input'
+import UploadBox from '../../components/write/UploadBox'
 
 const options = {
   center: new window.kakao.maps.LatLng(33.450701, 126.570667),
@@ -12,15 +17,27 @@ const options = {
 const WritePage = () => {
   const mapRef = useRef<HTMLDivElement>(null)
   const [map, setMap] = useState<any>(null)
+  const [mapInputAddress, onChangeMapInputAddress] = useInput('')
+  const [addressSearchOpen, setAddressSerarchOpen] = useState(false)
   // let map: any
   // 검색결과 배열에 담아줌
   const [Places, setPlaces] = useState([])
 
   const [test, setTest] = useState(false)
 
+  const [isActive, setIsActive] = useState(false)
+
+  const onClickModalOpen = () => {
+    setIsActive(true)
+  }
+
+  const onClickModalClose = () => {
+    setIsActive(false)
+  }
+
   const onClickSearch = () => {
     console.log('eeee')
-    setTest(true)
+    setAddressSerarchOpen(true)
   }
 
   useEffect(() => {
@@ -70,12 +87,14 @@ const WritePage = () => {
       fullAddr += extraAddr !== '' ? ` (${extraAddr})` : ''
       setTest(false)
       const geocoder = new window.kakao.maps.services.Geocoder()
+      console.log(fullAddr)
 
       // 주소로 좌표를 검색합니다
       geocoder.addressSearch(fullAddr, function (result: any, status: any) {
         // 정상적으로 검색이 완료됐으면
         if (status === window.kakao.maps.services.Status.OK) {
           const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x)
+          console.log(coords)
 
           // 결과값으로 받은 위치를 마커로 표시합니다
           const marker = new window.kakao.maps.Marker({
@@ -100,9 +119,30 @@ const WritePage = () => {
     <>
       <MapContainer>
         <ControllerBox>
-          <div>키워드 검색</div>
-          <Button onClick={onClickSearch}>검색</Button>
-          {test && <DaumPostcode autoClose onComplete={onCompletePost} />}
+          <div>
+            <Button onClick={onClickModalOpen}>리스트 추가</Button>
+
+            <ModalContainer isActive={isActive} closeEvent={onClickModalClose} maxWidth="500px">
+              <Card title="리스트 추가">
+                <CardInputGroup>
+                  <div className="title">주소 검색</div>
+                  <div className="input_group">
+                    <Input type="text" value={mapInputAddress} onChange={onChangeMapInputAddress} disabled={true} />
+                    <Button onClick={onClickSearch}>검색</Button>
+                  </div>
+                </CardInputGroup>
+                <CardInputGroup>
+                  {addressSearchOpen && <DaumPostcode autoClose onComplete={onCompletePost} />}
+                </CardInputGroup>
+                <CardInputGroup>
+                  <div className="title">사진 추가</div>
+                  <div className="upload_group">
+                    <UploadBox />
+                  </div>
+                </CardInputGroup>
+              </Card>
+            </ModalContainer>
+          </div>
         </ControllerBox>
         <div style={{ width: '100%', height: '100%' }} id="map" ref={mapRef} />
       </MapContainer>

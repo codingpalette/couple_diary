@@ -10,3 +10,29 @@ export const ControllerBox = styled.div`
   height: 100%;
   background-color: ${colors.White};
 `
+
+export const CardInputGroup = styled.div`
+  margin-bottom: 1rem;
+
+  .title {
+    font-size: 0.8rem;
+    color: ${colors.Gray_500};
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  .input_group {
+    display: flex;
+    align-items: center;
+
+    button {
+      min-width: 70px;
+      margin-left: 1rem;
+    }
+  }
+
+  .upload_group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+`
