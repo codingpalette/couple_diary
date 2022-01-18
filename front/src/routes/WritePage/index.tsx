@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import MapContainer from '../../containers/MapContainer'
 import { CardInputGroup, ControllerBox } from './styles'
 import Button from '../../components/common/Button'
@@ -8,6 +8,7 @@ import Card from '../../components/common/Card'
 import useInput from '../../hooks/useInput'
 import Input from '../../components/common/Input'
 import UploadBox from '../../components/write/UploadBox'
+import axios from 'axios'
 
 const options = {
   center: new window.kakao.maps.LatLng(33.450701, 126.570667),
@@ -115,6 +116,18 @@ const WritePage = () => {
     }
   }
 
+  const onFileChange = useCallback(async e => {
+    console.log('image', e.target.files)
+    const files = e.target.files
+    const formData = new FormData()
+    formData.append('file', files)
+
+    try {
+    } catch (e) {
+      console.log(e)
+    }
+  }, [])
+
   return (
     <>
       <MapContainer>
@@ -137,7 +150,7 @@ const WritePage = () => {
                 <CardInputGroup>
                   <div className="title">사진 추가</div>
                   <div className="upload_group">
-                    <UploadBox />
+                    <UploadBox onFileChange={onFileChange} />
                   </div>
                 </CardInputGroup>
               </Card>

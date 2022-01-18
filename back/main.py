@@ -1,7 +1,7 @@
 from typing import Optional
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from routes import user
+from routes import user, image
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from middlewares.auth_check import access_control
@@ -44,6 +44,7 @@ def create_app():
 
 
     app.include_router(user.router, tags=["user"], prefix="/api")
+    app.include_router(image.router, tags=["image"], prefix="/api")
 
     app.mount("/", SPAStaticFiles(directory="public", html=True), name="public")
 
