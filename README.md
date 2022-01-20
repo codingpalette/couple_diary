@@ -8,6 +8,7 @@ DATABASE="database"
 DBUSER="dbuser"
 PASSWORD="password"
 TOKEN_KEY="key"
+Authorization="Bearer key"
 ```
 
 ## front .env 내용

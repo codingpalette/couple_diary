@@ -11,5 +11,6 @@ def conf():
         "USERNAME": os.getenv('DBUSER'),
         "PASSWORD": os.getenv('PASSWORD'),
         "TOKEN_KEY": os.getenv('TOKEN_KEY'),
+        "Authorization": os.getenv('Authorization'),
     }
     return config

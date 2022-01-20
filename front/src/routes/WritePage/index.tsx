@@ -120,9 +120,11 @@ const WritePage = () => {
     console.log('image', e.target.files)
     const files = e.target.files
     const formData = new FormData()
-    formData.append('file', files)
+    formData.append('file', files[0])
 
     try {
+      const res = await axios.post('/api/image/upload', formData)
+      console.log(res)
     } catch (e) {
       console.log(e)
     }
