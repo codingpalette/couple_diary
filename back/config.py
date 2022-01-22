@@ -12,5 +12,6 @@ def conf():
         "PASSWORD": os.getenv('PASSWORD'),
         "TOKEN_KEY": os.getenv('TOKEN_KEY'),
         "Authorization": os.getenv('Authorization'),
+        "IMAGE_ACCOUNT_ID": os.getenv('IMAGE_ACCOUNT_ID'),
     }
     return config
