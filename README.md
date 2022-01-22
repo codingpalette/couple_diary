@@ -9,6 +9,7 @@ DBUSER="dbuser"
 PASSWORD="password"
 TOKEN_KEY="key"
 Authorization="Bearer key"
+IMAGE_ACCOUNT_ID="ACCOUNT_ID"
 ```
 
 
