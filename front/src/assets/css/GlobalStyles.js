@@ -1,6 +1,8 @@
 import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
+  @import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+  
   blockquote, body, button, code, dd, div, dl, dt, fieldset, form, h1, h2, h3, h4, h5, h6, input, legend, li, ol, p, pre, select, td, textarea, th, ul {margin:0;padding:0}
   fieldset, img {border:0}
   dl, li, menu, ol, ul {list-style:none}
@@ -31,12 +33,17 @@ const GlobalStyle = createGlobalStyle`
     width: 100%;
     height: 100%;
   }
+  
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+  }
 `
 
 export const colors = {
   White: '#fff',
   Black: '#000',
-
+  Title: '#191f28',
+  Main: 'rgb(51, 61, 75)',
   Slate_50: '#f8fafc',
   Slate_100: '#f1f5f9',
   Slate_200: '#e2e8f0',
