@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components'
 import transitions from '../../assets/css/transitions'
 import { colors } from '../../assets/css/GlobalStyles'
 
-export const Container = styled.div<{ isActive: boolean; maxWidth: string }>`
+export const Container = styled.div<{ isActive: boolean | undefined; maxWidth: string }>`
   display: flex;
   position: fixed;
   top: 0;

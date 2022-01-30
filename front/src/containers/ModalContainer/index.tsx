@@ -3,7 +3,7 @@ import { Container } from './styles'
 
 export type ModalContainerProps = {
   children: React.ReactNode
-  isActive: boolean
+  isActive: boolean | undefined
   closeEvent?: (e?: React.MouseEvent<HTMLDivElement>) => void
   maxWidth: string
 }
