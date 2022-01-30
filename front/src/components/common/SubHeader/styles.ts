@@ -13,7 +13,7 @@ export const HeaderBox = styled.div`
 `
 
 export const HeaderTag = styled.header`
-  max-width: 600px;
+  max-width: 1000px;
   width: 100%;
   height: 60px;
   margin: 0 auto;
