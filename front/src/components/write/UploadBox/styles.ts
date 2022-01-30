@@ -12,4 +12,12 @@ export const UploadContent = styled.div`
     display: block;
     padding-bottom: 100%;
   }
+
+  svg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: ${colors.White};
+  }
 `
