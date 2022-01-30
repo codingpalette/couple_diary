@@ -8,10 +8,11 @@ export const HeaderBox = styled.div`
   top: 0;
   background-color: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(20px);
+  z-index: 100;
 `
 
 export const HeaderTag = styled.header`
-  max-width: 600px;
+  max-width: 1000px;
   width: 100%;
   height: 60px;
   margin: 0 auto;

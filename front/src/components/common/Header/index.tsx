@@ -13,11 +13,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
 import useSWR from 'swr'
 import fetcher from '../../../hooks/fetcher'
+import useLoginModalSWR from '../../../stores/useLoginModalSWR'
 
 const Header = () => {
   const { data: userData, error, mutate } = useSWR('/api/user/check', fetcher)
 
-  const [isActive, setIsActive] = useState(false)
+  const { data: isActive, mutate: setIsActive } = useLoginModalSWR()
+  // const [isActive, setIsActive] = useState(false)
   const [mode, setMode] = useState('login')
   const [email, onChangeEmail, onResetEmail] = useInput('')
   const [name, onChangeName, onResetName] = useInput('')
