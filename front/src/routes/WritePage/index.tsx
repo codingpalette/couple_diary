@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import MapContainer from '../../containers/MapContainer'
-import { CardInputGroup, ControllerBox } from './styles'
+import { CardButtonGroup, CardInputGroup, ControllerBox, SelectContainerBox } from './styles'
 import Button from '../../components/common/Button'
 import DaumPostcode from 'react-daum-postcode'
 import ModalContainer from '../../containers/ModalContainer'
@@ -9,6 +9,9 @@ import useInput from '../../hooks/useInput'
 import Input from '../../components/common/Input'
 import UploadBox from '../../components/write/UploadBox'
 import axios from 'axios'
+import ImageBox from '../../components/write/ImageBox'
+import useBoolean from '../../hooks/useBoolean'
+import Textarea from '../../components/common/Textarea'
 
 const options = {
   center: new window.kakao.maps.LatLng(33.450701, 126.570667),
@@ -18,8 +21,19 @@ const options = {
 const WritePage = () => {
   const mapRef = useRef<HTMLDivElement>(null)
   const [map, setMap] = useState<any>(null)
-  const [mapInputAddress, onChangeMapInputAddress] = useInput('')
-  const [addressSearchOpen, setAddressSerarchOpen] = useState(false)
+  const [mapInputAddress, onChangeMapInputAddress, onResetMapInputAddress, onSetMapInputAddress] = useInput('')
+  const [addressSearchOpen, setAddressSearchOpen] = useState(false)
+
+  const [mapData, setMapData] = useState<any>([])
+  const [mapObjData, setMapObjData] = useState<any>({
+    fullAddr: '',
+    coords: {},
+  })
+
+  useEffect(() => {
+    console.log(mapObjData)
+  }, [mapObjData])
+
   // let map: any
   // 검색결과 배열에 담아줌
   const [Places, setPlaces] = useState([])
@@ -38,7 +52,7 @@ const WritePage = () => {
 
   const onClickSearch = () => {
     console.log('eeee')
-    setAddressSerarchOpen(true)
+    setAddressSearchOpen(true)
   }
 
   useEffect(() => {
@@ -96,39 +110,98 @@ const WritePage = () => {
         if (status === window.kakao.maps.services.Status.OK) {
           const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x)
           console.log(coords)
+          onSetMapInputAddress(fullAddr)
+          setMapObjData({
+            ...mapObjData,
+            fullAddr,
+            coords,
+          })
 
           // 결과값으로 받은 위치를 마커로 표시합니다
-          const marker = new window.kakao.maps.Marker({
-            map: map,
-            position: coords,
-          })
+          // const marker = new window.kakao.maps.Marker({
+          //   map: map,
+          //   position: coords,
+          // })
 
           // 인포윈도우로 장소에 대한 설명을 표시합니다
-          const infowindow = new window.kakao.maps.InfoWindow({
-            content: '<div style="width:150px;text-align:center;padding:6px 0;">우리회사</div>',
-          })
-          infowindow.open(map, marker)
+          // const infowindow = new window.kakao.maps.InfoWindow({
+          //   content: '<div style="width:150px;text-align:center;padding:6px 0;">우리회사</div>',
+          // })
+          // infowindow.open(map, marker)
 
           // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
-          map.setCenter(coords)
+          // map.setCenter(coords)
+
+          // onClickModalClose()
         }
       })
     }
   }
 
-  const onFileChange = useCallback(async e => {
-    console.log('image', e.target.files)
-    const files = e.target.files
-    const formData = new FormData()
-    formData.append('file', files[0])
+  const [images, setImages] = useState<any>([])
 
-    try {
-      const res = await axios.post('/api/image/upload', formData)
-      console.log(res)
-    } catch (e) {
-      console.log(e)
-    }
-  }, [])
+  const onFileChange = useCallback(
+    async e => {
+      const files = e.target.files
+      const formData = new FormData()
+      formData.append('file', files[0])
+
+      try {
+        const res = await axios.post('/api/image/upload', formData)
+        // console.log(res)
+        if (res.data.result === 'success') {
+          setImages([...images, res.data.data])
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    [images],
+  )
+
+  const [imageRemoveModalActive, imageRemoveModalActiveToggle] = useBoolean(false)
+  const [removeImageId, setRemoveImageId] = useState<string>('')
+
+  const imageRemoveModalOpen = (id: string) => {
+    setRemoveImageId(id)
+    imageRemoveModalActiveToggle()
+  }
+
+  const onClickImageRemoveEvent = async () => {
+    setImages(images.filter((v: any) => v.id !== removeImageId))
+    imageRemoveModalActiveToggle()
+  }
+
+  const onClickMapSave = () => {
+    console.log('2222222')
+    const content =
+      '<div class="wrap">' +
+      '    <div class="info">' +
+      '        <div class="title">' +
+      '            카카오 스페이스닷원' +
+      '        </div>' +
+      '    </div>' +
+      '</div>'
+
+    // 마커를 생성합니다
+    const marker = new window.kakao.maps.Marker({
+      position: mapObjData.coords,
+    })
+
+    // 마커가 지도 위에 표시되도록 설정합니다
+    marker.setMap(map)
+
+    const overlay = new window.kakao.maps.CustomOverlay({
+      content: content,
+      map: map,
+      position: mapObjData.coords,
+    })
+
+    overlay.setMap(map)
+    // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+    map.setCenter(mapObjData.coords)
+    onClickModalClose()
+  }
 
   return (
     <>
@@ -152,15 +225,49 @@ const WritePage = () => {
                 <CardInputGroup>
                   <div className="title">사진 추가</div>
                   <div className="upload_group">
+                    {images.length > 0 &&
+                      images.map((v: any) => (
+                        <ImageBox key={v.id} img={v.url} onClick={() => imageRemoveModalOpen(v.id)} />
+                      ))}
                     <UploadBox onFileChange={onFileChange} />
                   </div>
                 </CardInputGroup>
+                <CardInputGroup>
+                  <div className="title">내용 입력</div>
+                  <div className="input_group">
+                    <Textarea
+                      value={mapInputAddress}
+                      onChange={onChangeMapInputAddress}
+                      maxLength={100}
+                      placeholder="100글자 이내로 작성해 주세요."
+                    />
+                  </div>
+                </CardInputGroup>
+                <CardButtonGroup>
+                  <Button onClick={onClickMapSave}>저장</Button>
+                </CardButtonGroup>
               </Card>
             </ModalContainer>
           </div>
         </ControllerBox>
         <div style={{ width: '100%', height: '100%' }} id="map" ref={mapRef} />
       </MapContainer>
+      <ModalContainer isActive={imageRemoveModalActive} closeEvent={imageRemoveModalActiveToggle} maxWidth="500px">
+        <Card title="이미지 삭제">
+          <SelectContainerBox>
+            <p>이미지를 삭제 하시겠습니까?</p>
+            <span className="line" />
+            <div className="button_box">
+              <Button theme="tertiary" onClick={imageRemoveModalActiveToggle}>
+                취소
+              </Button>
+              <Button theme="secondary" onClick={onClickImageRemoveEvent}>
+                삭제
+              </Button>
+            </div>
+          </SelectContainerBox>
+        </Card>
+      </ModalContainer>
     </>
   )
 }

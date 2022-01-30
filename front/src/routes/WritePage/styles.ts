@@ -36,3 +36,27 @@ export const CardInputGroup = styled.div`
     gap: 10px;
   }
 `
+
+export const CardButtonGroup = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+`
+
+export const SelectContainerBox = styled.div`
+  width: 100%;
+
+  .line {
+    margin: 1rem -1rem;
+    display: block;
+    border-bottom: 1px solid ${colors.Gray_300};
+  }
+
+  .button_box {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+`
