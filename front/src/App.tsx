@@ -1,8 +1,11 @@
+import loadable from '@loadable/component'
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import MainPage from './routes/MainPage'
 import MenuPage from './routes/MenuPage'
-import WritePage from './routes/WritePage'
+// import WritePage from './routes/WritePage'
+const WritePage = loadable(() => import('./routes/WritePage'))
+
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
