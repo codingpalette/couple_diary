@@ -1,17 +1,18 @@
 import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ContentBox, Section1, Section2 } from './styles'
 import Header from '../../components/common/Header'
 import iphone from '../../assets/images/iPhone12.png'
 import sample from '../../assets/images/sample.png'
 import Button from '../../components/common/Button'
 import useLoginModalSWR from '../../stores/useLoginModalSWR'
+import useSWR from 'swr'
+import fetcher from '../../hooks/fetcher'
 
 const MainPage = () => {
-  const { data: isActive, mutate: setIsActive } = useLoginModalSWR()
-
-  useEffect(() => {
-    console.log(isActive)
-  }, [isActive])
+  const { data: userData, error, mutate } = useSWR('/api/user/check', fetcher)
+  const { mutate: setIsActive } = useLoginModalSWR()
+  const navigate = useNavigate()
 
   return (
     <>
@@ -34,9 +35,15 @@ const MainPage = () => {
                 보관하세요
               </h1>
             </div>
-            <div className="button_box">
-              <Button onClick={() => setIsActive(true)}>시작하기</Button>
-            </div>
+            {userData && (
+              <div className="button_box">
+                {userData && userData.result === 'success' ? (
+                  <Button onClick={() => navigate('/menu')}>시작하기</Button>
+                ) : (
+                  <Button onClick={() => setIsActive(true)}>시작하기</Button>
+                )}
+              </div>
+            )}
             <div>
               <div className="image_box">
                 <img src={iphone} alt="iphone" className="iphone" />
