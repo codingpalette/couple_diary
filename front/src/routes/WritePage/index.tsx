@@ -12,17 +12,34 @@ import axios from 'axios'
 import ImageBox from '../../components/write/ImageBox'
 import useBoolean from '../../hooks/useBoolean'
 import Textarea from '../../components/common/Textarea'
+import NavBar from '../../components/write/NavBar'
+import DatePicker from 'react-datepicker'
+import { ko } from 'date-fns/esm/locale'
+import 'react-datepicker/dist/react-datepicker.css'
 
 const options = {
-  center: new window.kakao.maps.LatLng(33.450701, 126.570667),
-  level: 3,
+  center: new window.kakao.maps.LatLng(37.5705611277251, 126.987024769656),
+  level: 12,
 }
 
 const WritePage = () => {
   const mapRef = useRef<HTMLDivElement>(null)
   const [map, setMap] = useState<any>(null)
+  const [mapList, setMapList] = useState<any>([
+    {
+      content:
+        '<div class="wrap">    <div class="info">        <div class="title">            카카오 스페이스닷원        </div>    </div></div>',
+      position: { La: 126.987024769656, Ma: 37.5705611277251 },
+    },
+    {
+      content: '',
+      position: { La: 126.708314351411, Ma: 37.468363888588 },
+    },
+  ])
   const [mapInputAddress, onChangeMapInputAddress, onResetMapInputAddress, onSetMapInputAddress] = useInput('')
   const [addressSearchOpen, setAddressSearchOpen] = useState(false)
+  const [contentText, onChangeContentText] = useInput('')
+  const [startDate, setStartDate] = useState<Date | null>(new Date())
 
   const [mapData, setMapData] = useState<any>([])
   const [mapObjData, setMapObjData] = useState<any>({
@@ -58,15 +75,19 @@ const WritePage = () => {
   useEffect(() => {
     const map = new window.kakao.maps.Map(mapRef.current, options)
     // 마커가 표시될 위치입니다
-    const markerPosition = new window.kakao.maps.LatLng(33.450701, 126.570667)
+    // const markerPosition = new window.kakao.maps.LatLng(33.450701, 126.570667)
 
-    // 마커를 생성합니다
-    const marker = new window.kakao.maps.Marker({
-      position: markerPosition,
-    })
+    for (let i = 0; i < mapList.length; i++) {
+      // 마커를 생성합니다
+      const markerPosition = new window.kakao.maps.LatLng(mapList[i].position.Ma, mapList[i].position.La)
 
-    // 마커가 지도 위에 표시되도록 설정합니다
-    marker.setMap(map)
+      // 마커를 생성합니다
+      const marker = new window.kakao.maps.Marker({
+        position: markerPosition,
+      })
+      marker.setMap(map)
+    }
+
     setMap(map)
   }, [])
 
@@ -197,11 +218,24 @@ const WritePage = () => {
       position: mapObjData.coords,
     })
 
+    setMapList([
+      ...mapList,
+      {
+        content: content,
+        // map: map,
+        position: mapObjData.coords,
+      },
+    ])
+
     overlay.setMap(map)
     // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
     map.setCenter(mapObjData.coords)
     onClickModalClose()
   }
+
+  useEffect(() => {
+    console.log(mapList)
+  }, [mapList])
 
   return (
     <>
@@ -212,6 +246,19 @@ const WritePage = () => {
 
             <ModalContainer isActive={isActive} closeEvent={onClickModalClose} maxWidth="500px">
               <Card title="리스트 추가">
+                <CardInputGroup>
+                  <div className="title">날짜 선택</div>
+                  <DatePicker
+                    selected={startDate}
+                    onChange={date => setStartDate(date)}
+                    locale={ko} // 언어설정 기본값은 영어
+                    dateFormat="yyyy-MM-dd" // 날짜 형식 설정
+                    className="input-datepicker" // 클래스 명 지정 css주기 위해
+                    closeOnScroll={true} // 스크롤을 움직였을 때 자동으로 닫히도록 설정 기본값 false
+                    // placeholderText="체크인 날짜 선택" // placeholder
+                  />
+                </CardInputGroup>
+
                 <CardInputGroup>
                   <div className="title">주소 검색</div>
                   <div className="input_group">
@@ -236,14 +283,17 @@ const WritePage = () => {
                   <div className="title">내용 입력</div>
                   <div className="input_group">
                     <Textarea
-                      value={mapInputAddress}
-                      onChange={onChangeMapInputAddress}
+                      value={contentText}
+                      onChange={onChangeContentText}
                       maxLength={100}
                       placeholder="100글자 이내로 작성해 주세요."
                     />
                   </div>
                 </CardInputGroup>
                 <CardButtonGroup>
+                  <Button onClick={onClickModalClose} theme="tertiary">
+                    닫기
+                  </Button>
                   <Button onClick={onClickMapSave}>저장</Button>
                 </CardButtonGroup>
               </Card>
@@ -268,6 +318,7 @@ const WritePage = () => {
           </SelectContainerBox>
         </Card>
       </ModalContainer>
+      <NavBar createModalOpen={onClickModalOpen} />
     </>
   )
 }
