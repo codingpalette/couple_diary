@@ -16,6 +16,7 @@ import NavBar from '../../components/write/NavBar'
 import DatePicker from 'react-datepicker'
 import { ko } from 'date-fns/esm/locale'
 import 'react-datepicker/dist/react-datepicker.css'
+import { Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk'
 
 const options = {
   center: new window.kakao.maps.LatLng(37.5705611277251, 126.987024769656),
@@ -28,12 +29,12 @@ const WritePage = () => {
   const [mapList, setMapList] = useState<any>([
     {
       content:
-        '<div class="wrap">    <div class="info">        <div class="title">            카카오 스페이스닷원        </div>    </div></div>',
-      position: { La: 126.987024769656, Ma: 37.5705611277251 },
+        '<div class="overlay_wrap">    <div class="info">        <div class="title">            카카오 스페이스닷원        </div>    </div></div>',
+      position: { lng: 126.987024769656, lat: 37.5705611277251 },
     },
     {
       content: '',
-      position: { La: 126.708314351411, Ma: 37.468363888588 },
+      position: { lng: 126.708314351411, lat: 37.468363888588 },
     },
   ])
   const [mapInputAddress, onChangeMapInputAddress, onResetMapInputAddress, onSetMapInputAddress] = useInput('')
@@ -72,24 +73,24 @@ const WritePage = () => {
     setAddressSearchOpen(true)
   }
 
-  useEffect(() => {
-    const map = new window.kakao.maps.Map(mapRef.current, options)
-    // 마커가 표시될 위치입니다
-    // const markerPosition = new window.kakao.maps.LatLng(33.450701, 126.570667)
-
-    for (let i = 0; i < mapList.length; i++) {
-      // 마커를 생성합니다
-      const markerPosition = new window.kakao.maps.LatLng(mapList[i].position.Ma, mapList[i].position.La)
-
-      // 마커를 생성합니다
-      const marker = new window.kakao.maps.Marker({
-        position: markerPosition,
-      })
-      marker.setMap(map)
-    }
-
-    setMap(map)
-  }, [])
+  // useEffect(() => {
+  //   const map = new window.kakao.maps.Map(mapRef.current, options)
+  //   // 마커가 표시될 위치입니다
+  //   // const markerPosition = new window.kakao.maps.LatLng(33.450701, 126.570667)
+  //
+  //   for (let i = 0; i < mapList.length; i++) {
+  //     // 마커를 생성합니다
+  //     const markerPosition = new window.kakao.maps.LatLng(mapList[i].position.Ma, mapList[i].position.La)
+  //
+  //     // 마커를 생성합니다
+  //     const marker = new window.kakao.maps.Marker({
+  //       position: markerPosition,
+  //     })
+  //     marker.setMap(map)
+  //   }
+  //
+  //   setMap(map)
+  // }, [])
 
   useEffect(() => {
     function onResize() {
@@ -193,16 +194,22 @@ const WritePage = () => {
     imageRemoveModalActiveToggle()
   }
 
+  const closeOverlay = () => {
+    console.log('11111')
+  }
+
   const onClickMapSave = () => {
     console.log('2222222')
-    const content =
-      '<div class="wrap">' +
-      '    <div class="info">' +
-      '        <div class="title">' +
-      '            카카오 스페이스닷원' +
-      '        </div>' +
-      '    </div>' +
-      '</div>'
+    const content = `
+      <div class="overlay_wrap">
+        <div class="info">
+          <div class="title">
+            카카오 스페이스닷원
+            <div class="close" onclick="closeOverlay()" title="닫기">닫기</div>
+          </div>
+        </div>
+      </div>
+    `
 
     // 마커를 생성합니다
     const marker = new window.kakao.maps.Marker({
@@ -224,6 +231,7 @@ const WritePage = () => {
         content: content,
         // map: map,
         position: mapObjData.coords,
+        date: startDate,
       },
     ])
 
@@ -236,6 +244,15 @@ const WritePage = () => {
   useEffect(() => {
     console.log(mapList)
   }, [mapList])
+
+  // 저장 확인 모달 상태값
+  const [saveModalActive, saveModalActiveToggle] = useBoolean(false)
+
+  // 저장 확인 모달 오픈 이벤트
+  const onClickSaveModalOpen = () => {
+    saveModalActiveToggle()
+    console.log('123123')
+  }
 
   return (
     <>
@@ -300,7 +317,15 @@ const WritePage = () => {
             </ModalContainer>
           </div>
         </ControllerBox>
-        <div style={{ width: '100%', height: '100%' }} id="map" ref={mapRef} />
+        <Map center={{ lat: 36.2683, lng: 127.6358 }} style={{ width: '100%', height: '100%' }} level={13}>
+          {mapList.map((v: any, i: any) => (
+            <MapMarker key={i} position={v.position}>
+              <div style={{ color: '#000' }}>Hello World!</div>
+            </MapMarker>
+          ))}
+        </Map>
+
+        {/*<div style={{ width: '100%', height: '100%' }} id="map" ref={mapRef} />*/}
       </MapContainer>
       <ModalContainer isActive={imageRemoveModalActive} closeEvent={imageRemoveModalActiveToggle} maxWidth="500px">
         <Card title="이미지 삭제">
@@ -318,7 +343,23 @@ const WritePage = () => {
           </SelectContainerBox>
         </Card>
       </ModalContainer>
-      <NavBar createModalOpen={onClickModalOpen} />
+
+      <ModalContainer isActive={saveModalActive} closeEvent={saveModalActiveToggle} maxWidth="500px">
+        <Card title="다이어리 저장">
+          <SelectContainerBox>
+            <p>다이어리를 저장 하시겠습니까?</p>
+            <span className="line" />
+            <div className="button_box">
+              <Button theme="tertiary" onClick={saveModalActiveToggle}>
+                취소
+              </Button>
+              <Button>저장</Button>
+            </div>
+          </SelectContainerBox>
+        </Card>
+      </ModalContainer>
+
+      <NavBar createModalOpen={onClickModalOpen} onClickSaveModalOpen={onClickSaveModalOpen} />
     </>
   )
 }

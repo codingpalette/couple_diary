@@ -11,12 +11,11 @@ import { checkEmail } from '../../../hooks/useStringCheck'
 import { ErrorMessageOpen, SuccessMessageOpen } from '../../../hooks/useToast'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
-import useSWR from 'swr'
-import fetcher from '../../../hooks/fetcher'
 import useLoginModalSWR from '../../../stores/useLoginModalSWR'
+import useUser from '../../../hooks/useUser'
 
 const Header = () => {
-  const { data: userData, error, mutate } = useSWR('/api/user/check', fetcher)
+  const { user, isLoading, isError, mutate } = useUser()
 
   const { data: isActive, mutate: setIsActive } = useLoginModalSWR()
   // const [isActive, setIsActive] = useState(false)
@@ -90,8 +89,11 @@ const Header = () => {
         }
       } catch (e: any) {
         if (e.response.data) {
-          // console.log(e.response.data)
+          console.log(e.response.data)
           ErrorMessageOpen(e.response.data.message)
+        }
+        if (e.response.data.detail) {
+          ErrorMessageOpen(e.response.data.detail.message)
         }
       }
     },
@@ -105,9 +107,9 @@ const Header = () => {
           <div className="logo">
             <Link to="/">로고</Link>
           </div>
-          {userData && (
+          {!isLoading && (
             <div className="button_box">
-              {userData && userData.result === 'success' ? (
+              {user && user.result === 'success' ? (
                 <Link to="/menu">
                   <FontAwesomeIcon icon={faUserCircle} size="2x" />
                 </Link>

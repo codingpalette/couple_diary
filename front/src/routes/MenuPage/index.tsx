@@ -1,9 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import SubHeader from '../../components/common/SubHeader'
 import MenuList from '../../components/common/MenuList'
 import MainContainer from '../../containers/MainContainer'
 
+import useUser from '../../hooks/useUser'
+
 const MenuPage = () => {
+  const { user, isLoading, isError } = useUser()
+
+  if (isLoading)
+    return (
+      <>
+        <div>Loading.....</div>
+      </>
+    )
+
   return (
     <>
       <SubHeader />
