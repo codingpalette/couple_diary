@@ -28,6 +28,9 @@ const MenuPage = () => {
         <MenuList href="/" icon="💾">
           저장 리스트
         </MenuList>
+        <MenuList href="/" icon="💾">
+          로그아웃
+        </MenuList>
       </MainContainer>
     </>
   )
