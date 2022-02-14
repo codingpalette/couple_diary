@@ -30,6 +30,12 @@ export const CardInputGroup = styled.div`
     }
   }
 
+  .address_group {
+    button {
+      margin-top: 0.5rem;
+    }
+  }
+
   .upload_group {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

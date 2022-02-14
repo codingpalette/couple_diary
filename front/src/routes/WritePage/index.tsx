@@ -28,15 +28,17 @@ const WritePage = () => {
   const [map, setMap] = useState<any>(null)
   const [mapList, setMapList] = useState<any>([
     {
-      content:
-        '<div class="overlay_wrap">    <div class="info">        <div class="title">            카카오 스페이스닷원        </div>    </div></div>',
-      position: { lng: 126.987024769656, lat: 37.5705611277251 },
-    },
-    {
       content: '',
       position: { lng: 126.708314351411, lat: 37.468363888588 },
     },
   ])
+
+  useEffect(() => {
+    setTimeout(() => {
+      setMapList([...mapList, { content: '', position: { lng: 126.987024769656, lat: 37.5705611277251 } }])
+    }, 1000)
+  }, [])
+
   const [mapInputAddress, onChangeMapInputAddress, onResetMapInputAddress, onSetMapInputAddress] = useInput('')
   const [addressSearchOpen, setAddressSearchOpen] = useState(false)
   const [contentText, onChangeContentText] = useInput('')
@@ -69,51 +71,13 @@ const WritePage = () => {
   }
 
   const onClickSearch = () => {
-    console.log('eeee')
     setAddressSearchOpen(true)
   }
 
-  // useEffect(() => {
-  //   const map = new window.kakao.maps.Map(mapRef.current, options)
-  //   // 마커가 표시될 위치입니다
-  //   // const markerPosition = new window.kakao.maps.LatLng(33.450701, 126.570667)
-  //
-  //   for (let i = 0; i < mapList.length; i++) {
-  //     // 마커를 생성합니다
-  //     const markerPosition = new window.kakao.maps.LatLng(mapList[i].position.Ma, mapList[i].position.La)
-  //
-  //     // 마커를 생성합니다
-  //     const marker = new window.kakao.maps.Marker({
-  //       position: markerPosition,
-  //     })
-  //     marker.setMap(map)
-  //   }
-  //
-  //   setMap(map)
-  // }, [])
-
-  useEffect(() => {
-    function onResize() {
-      resizeEvent()
-    }
-    window.addEventListener('resize', onResize)
-    return () => {
-      window.removeEventListener('resize', onResize)
-    }
-  }, [])
-
-  const resizeEvent = () => {
-    const winW = document.body.clientWidth
-    // console.log(winW)
-    // if (mapRef.current) {
-    //   mapRef.current.style.width = `${winW}px`
-    // }
-  }
-
   const onCompletePost = (data: any) => {
+    setAddressSearchOpen(false)
     let fullAddr = data.address
     let extraAddr = ''
-
     if (data.addressType === 'R') {
       if (data.bname !== '') {
         extraAddr += data.bname
@@ -138,23 +102,6 @@ const WritePage = () => {
             fullAddr,
             coords,
           })
-
-          // 결과값으로 받은 위치를 마커로 표시합니다
-          // const marker = new window.kakao.maps.Marker({
-          //   map: map,
-          //   position: coords,
-          // })
-
-          // 인포윈도우로 장소에 대한 설명을 표시합니다
-          // const infowindow = new window.kakao.maps.InfoWindow({
-          //   content: '<div style="width:150px;text-align:center;padding:6px 0;">우리회사</div>',
-          // })
-          // infowindow.open(map, marker)
-
-          // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
-          // map.setCenter(coords)
-
-          // onClickModalClose()
         }
       })
     }
@@ -203,41 +150,20 @@ const WritePage = () => {
     const content = `
       <div class="overlay_wrap">
         <div class="info">
-          <div class="title">
-            카카오 스페이스닷원
-            <div class="close" onclick="closeOverlay()" title="닫기">닫기</div>
-          </div>
+            <div class="title">카카오 스페이스닷원</div>
         </div>
       </div>
     `
-
-    // 마커를 생성합니다
-    const marker = new window.kakao.maps.Marker({
-      position: mapObjData.coords,
-    })
-
-    // 마커가 지도 위에 표시되도록 설정합니다
-    marker.setMap(map)
-
-    const overlay = new window.kakao.maps.CustomOverlay({
+    const position = { lng: mapObjData.coords.La, lat: mapObjData.coords.Ma }
+    const data = {
       content: content,
-      map: map,
-      position: mapObjData.coords,
-    })
+      position: position,
+    }
+    console.log('data', data)
+    // setMapList([...mapList, { content: '', position: { lng: 126.987024769656, lat: 37.5705611277251 } }])
+    setMapList([...mapList, data])
+    // setAddressSearchOpen(false)
 
-    setMapList([
-      ...mapList,
-      {
-        content: content,
-        // map: map,
-        position: mapObjData.coords,
-        date: startDate,
-      },
-    ])
-
-    overlay.setMap(map)
-    // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
-    map.setCenter(mapObjData.coords)
     onClickModalClose()
   }
 
@@ -257,66 +183,11 @@ const WritePage = () => {
   return (
     <>
       <MapContainer>
-        <ControllerBox>
-          <div>
-            <Button onClick={onClickModalOpen}>리스트 추가</Button>
-
-            <ModalContainer isActive={isActive} closeEvent={onClickModalClose} maxWidth="500px">
-              <Card title="리스트 추가">
-                <CardInputGroup>
-                  <div className="title">날짜 선택</div>
-                  <DatePicker
-                    selected={startDate}
-                    onChange={date => setStartDate(date)}
-                    locale={ko} // 언어설정 기본값은 영어
-                    dateFormat="yyyy-MM-dd" // 날짜 형식 설정
-                    className="input-datepicker" // 클래스 명 지정 css주기 위해
-                    closeOnScroll={true} // 스크롤을 움직였을 때 자동으로 닫히도록 설정 기본값 false
-                    // placeholderText="체크인 날짜 선택" // placeholder
-                  />
-                </CardInputGroup>
-
-                <CardInputGroup>
-                  <div className="title">주소 검색</div>
-                  <div className="input_group">
-                    <Input type="text" value={mapInputAddress} onChange={onChangeMapInputAddress} disabled={true} />
-                    <Button onClick={onClickSearch}>검색</Button>
-                  </div>
-                </CardInputGroup>
-                <CardInputGroup>
-                  {addressSearchOpen && <DaumPostcode autoClose onComplete={onCompletePost} />}
-                </CardInputGroup>
-                <CardInputGroup>
-                  <div className="title">사진 추가</div>
-                  <div className="upload_group">
-                    {images.length > 0 &&
-                      images.map((v: any) => (
-                        <ImageBox key={v.id} img={v.url} onClick={() => imageRemoveModalOpen(v.id)} />
-                      ))}
-                    <UploadBox onFileChange={onFileChange} />
-                  </div>
-                </CardInputGroup>
-                <CardInputGroup>
-                  <div className="title">내용 입력</div>
-                  <div className="input_group">
-                    <Textarea
-                      value={contentText}
-                      onChange={onChangeContentText}
-                      maxLength={100}
-                      placeholder="100글자 이내로 작성해 주세요."
-                    />
-                  </div>
-                </CardInputGroup>
-                <CardButtonGroup>
-                  <Button onClick={onClickModalClose} theme="tertiary">
-                    닫기
-                  </Button>
-                  <Button onClick={onClickMapSave}>저장</Button>
-                </CardButtonGroup>
-              </Card>
-            </ModalContainer>
-          </div>
-        </ControllerBox>
+        {/*<ControllerBox>*/}
+        {/*  <div>*/}
+        {/*    <Button onClick={onClickModalOpen}>리스트 추가</Button>*/}
+        {/*  </div>*/}
+        {/*</ControllerBox>*/}
         <Map center={{ lat: 36.2683, lng: 127.6358 }} style={{ width: '100%', height: '100%' }} level={13}>
           {mapList.map((v: any, i: any) => (
             <MapMarker key={i} position={v.position}>
@@ -356,6 +227,61 @@ const WritePage = () => {
               <Button>저장</Button>
             </div>
           </SelectContainerBox>
+        </Card>
+      </ModalContainer>
+
+      <ModalContainer isActive={isActive} closeEvent={onClickModalClose} maxWidth="500px">
+        <Card title="리스트 추가">
+          <CardInputGroup>
+            <div className="title">날짜 선택</div>
+            <DatePicker
+              selected={startDate}
+              onChange={date => setStartDate(date)}
+              locale={ko} // 언어설정 기본값은 영어
+              dateFormat="yyyy-MM-dd" // 날짜 형식 설정
+              className="input-datepicker" // 클래스 명 지정 css주기 위해
+              closeOnScroll={true} // 스크롤을 움직였을 때 자동으로 닫히도록 설정 기본값 false
+              // placeholderText="체크인 날짜 선택" // placeholder
+            />
+          </CardInputGroup>
+
+          <CardInputGroup>
+            <div className="title">주소 검색</div>
+            <div className="address_group">
+              <Input type="text" value={mapInputAddress} onChange={onChangeMapInputAddress} disabled={true} />
+              <Button width="100%" onClick={onClickSearch}>
+                검색
+              </Button>
+            </div>
+          </CardInputGroup>
+          <CardInputGroup>
+            {addressSearchOpen && <DaumPostcode autoClose={true} onComplete={onCompletePost} />}
+          </CardInputGroup>
+          <CardInputGroup>
+            <div className="title">사진 추가</div>
+            <div className="upload_group">
+              {images.length > 0 &&
+                images.map((v: any) => <ImageBox key={v.id} img={v.url} onClick={() => imageRemoveModalOpen(v.id)} />)}
+              <UploadBox onFileChange={onFileChange} />
+            </div>
+          </CardInputGroup>
+          <CardInputGroup>
+            <div className="title">내용 입력</div>
+            <div className="input_group">
+              <Textarea
+                value={contentText}
+                onChange={onChangeContentText}
+                maxLength={100}
+                placeholder="100글자 이내로 작성해 주세요."
+              />
+            </div>
+          </CardInputGroup>
+          <CardButtonGroup>
+            <Button onClick={onClickModalClose} theme="tertiary">
+              닫기
+            </Button>
+            <Button onClick={onClickMapSave}>저장</Button>
+          </CardButtonGroup>
         </Card>
       </ModalContainer>
 
