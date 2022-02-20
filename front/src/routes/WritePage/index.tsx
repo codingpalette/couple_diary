@@ -17,6 +17,7 @@ import DatePicker from 'react-datepicker'
 import { ko } from 'date-fns/esm/locale'
 import 'react-datepicker/dist/react-datepicker.css'
 import { Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk'
+import SlideModal from '../../components/diary/SlideModal'
 
 const options = {
   center: new window.kakao.maps.LatLng(37.5705611277251, 126.987024769656),
@@ -26,23 +27,26 @@ const options = {
 const WritePage = () => {
   const mapRef = useRef<HTMLDivElement>(null)
   const [map, setMap] = useState<any>(null)
-  const [mapList, setMapList] = useState<any>([
-    {
-      content: '',
-      position: { lng: 126.708314351411, lat: 37.468363888588 },
-    },
-  ])
+  const [mapList, setMapList] = useState<any>([])
 
-  useEffect(() => {
-    setTimeout(() => {
-      setMapList([...mapList, { content: '', position: { lng: 126.987024769656, lat: 37.5705611277251 } }])
-    }, 1000)
-  }, [])
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setMapList([...mapList, { content: '', position: { lng: 126.987024769656, lat: 37.5705611277251 } }])
+  //   }, 1000)
+  // }, [])
 
   const [mapInputAddress, onChangeMapInputAddress, onResetMapInputAddress, onSetMapInputAddress] = useInput('')
   const [addressSearchOpen, setAddressSearchOpen] = useState(false)
+  const [diaryTitle, onChangeDiaryTitle] = useInput('')
   const [contentText, onChangeContentText] = useInput('')
   const [startDate, setStartDate] = useState<Date | null>(new Date())
+
+  const [slideModalActive, setSlideModalActive] = useState(false)
+
+  const onClickSlideModalClose = () => {
+    console.log('aaaa')
+    setSlideModalActive(false)
+  }
 
   const [mapData, setMapData] = useState<any>([])
   const [mapObjData, setMapObjData] = useState<any>({
@@ -180,6 +184,11 @@ const WritePage = () => {
     console.log('123123')
   }
 
+  // 마커 클릭 했을 떄 이벤트
+  const onClickMarker = () => {
+    setSlideModalActive(true)
+  }
+
   return (
     <>
       <MapContainer>
@@ -190,9 +199,7 @@ const WritePage = () => {
         {/*</ControllerBox>*/}
         <Map center={{ lat: 36.2683, lng: 127.6358 }} style={{ width: '100%', height: '100%' }} level={13}>
           {mapList.map((v: any, i: any) => (
-            <MapMarker key={i} position={v.position}>
-              <div style={{ color: '#000' }}>Hello World!</div>
-            </MapMarker>
+            <MapMarker key={i} position={v.position} onClick={onClickMarker} />
           ))}
         </Map>
 
@@ -258,6 +265,10 @@ const WritePage = () => {
             {addressSearchOpen && <DaumPostcode autoClose={true} onComplete={onCompletePost} />}
           </CardInputGroup>
           <CardInputGroup>
+            <div className="title">다이어리 제목</div>
+            <Input type="text" value={diaryTitle} onChange={onChangeDiaryTitle} />
+          </CardInputGroup>
+          <CardInputGroup>
             <div className="title">사진 추가</div>
             <div className="upload_group">
               {images.length > 0 &&
@@ -284,6 +295,8 @@ const WritePage = () => {
           </CardButtonGroup>
         </Card>
       </ModalContainer>
+
+      <SlideModal isActive={slideModalActive} onClickModalClose={onClickSlideModalClose} />
 
       <NavBar createModalOpen={onClickModalOpen} onClickSaveModalOpen={onClickSaveModalOpen} />
     </>

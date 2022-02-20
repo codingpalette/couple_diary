@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import GlobalStyles from './assets/css/GlobalStyles'
 import axios from 'axios'
+import './assets/css/App.css'
 
 axios.defaults.withCredentials = true
 axios.defaults.baseURL =
