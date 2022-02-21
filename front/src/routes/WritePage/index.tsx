@@ -18,6 +18,7 @@ import { ko } from 'date-fns/esm/locale'
 import 'react-datepicker/dist/react-datepicker.css'
 import { Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk'
 import SlideModal from '../../components/diary/SlideModal'
+import { ErrorMessageOpen } from '../../hooks/useToast'
 
 const options = {
   center: new window.kakao.maps.LatLng(37.5705611277251, 126.987024769656),
@@ -26,7 +27,6 @@ const options = {
 
 const WritePage = () => {
   const mapRef = useRef<HTMLDivElement>(null)
-  const [map, setMap] = useState<any>(null)
   const [mapList, setMapList] = useState<any>([])
 
   // useEffect(() => {
@@ -37,26 +37,20 @@ const WritePage = () => {
 
   const [mapInputAddress, onChangeMapInputAddress, onResetMapInputAddress, onSetMapInputAddress] = useInput('')
   const [addressSearchOpen, setAddressSearchOpen] = useState(false)
-  const [diaryTitle, onChangeDiaryTitle] = useInput('')
-  const [contentText, onChangeContentText] = useInput('')
+  const [diaryTitle, onChangeDiaryTitle, onResetDiaryTitle] = useInput('')
+  const [contentText, onChangeContentText, onResetContentText] = useInput('')
   const [startDate, setStartDate] = useState<Date | null>(new Date())
 
   const [slideModalActive, setSlideModalActive] = useState(false)
 
   const onClickSlideModalClose = () => {
-    console.log('aaaa')
     setSlideModalActive(false)
   }
 
-  const [mapData, setMapData] = useState<any>([])
   const [mapObjData, setMapObjData] = useState<any>({
     fullAddr: '',
     coords: {},
   })
-
-  useEffect(() => {
-    console.log(mapObjData)
-  }, [mapObjData])
 
   // let map: any
   // 검색결과 배열에 담아줌
@@ -67,10 +61,16 @@ const WritePage = () => {
   const [isActive, setIsActive] = useState(false)
 
   const onClickModalOpen = () => {
+    onResetDiaryTitle()
+    onResetContentText()
+    onResetMapInputAddress()
+    setMapObjData({ fullAddr: '', coords: {} })
+    setImages([])
     setIsActive(true)
   }
 
   const onClickModalClose = () => {
+    setAddressSearchOpen(false)
     setIsActive(false)
   }
 
@@ -150,18 +150,25 @@ const WritePage = () => {
   }
 
   const onClickMapSave = () => {
-    console.log('2222222')
-    const content = `
-      <div class="overlay_wrap">
-        <div class="info">
-            <div class="title">카카오 스페이스닷원</div>
-        </div>
-      </div>
-    `
-    const position = { lng: mapObjData.coords.La, lat: mapObjData.coords.Ma }
+    if (mapObjData.fullAddr === '') {
+      ErrorMessageOpen('주소를 입력해 주세요.')
+    }
+    if (diaryTitle.trim().length === 0) {
+      ErrorMessageOpen('타이틀을 입력해 주세요.')
+    }
+    if (images.length === 0) {
+      ErrorMessageOpen('한 장 이상의 이미지를 등록해 주세요.')
+    }
+    if (contentText.trim().length === 0) {
+      ErrorMessageOpen('내용을 입력해 주세요.')
+    }
+
     const data = {
-      content: content,
-      position: position,
+      diaryTitle,
+      images,
+      contentText,
+      fullAddr: mapObjData.fullAddr,
+      position: { lng: mapObjData.coords.La, lat: mapObjData.coords.Ma },
     }
     console.log('data', data)
     // setMapList([...mapList, { content: '', position: { lng: 126.987024769656, lat: 37.5705611277251 } }])
@@ -175,6 +182,8 @@ const WritePage = () => {
     console.log(mapList)
   }, [mapList])
 
+  // 모달에 들어갈 데이터값
+  const [modalData, setModalData] = useState<any>(null)
   // 저장 확인 모달 상태값
   const [saveModalActive, saveModalActiveToggle] = useBoolean(false)
 
@@ -185,7 +194,9 @@ const WritePage = () => {
   }
 
   // 마커 클릭 했을 떄 이벤트
-  const onClickMarker = () => {
+  const onClickMarker = (v: any) => {
+    console.log(v)
+    setModalData(v)
     setSlideModalActive(true)
   }
 
@@ -197,9 +208,9 @@ const WritePage = () => {
         {/*    <Button onClick={onClickModalOpen}>리스트 추가</Button>*/}
         {/*  </div>*/}
         {/*</ControllerBox>*/}
-        <Map center={{ lat: 36.2683, lng: 127.6358 }} style={{ width: '100%', height: '100%' }} level={13}>
+        <Map center={{ lat: 36.2683, lng: 127.6358 }} style={{ width: '100%', height: '100%' }} level={12}>
           {mapList.map((v: any, i: any) => (
-            <MapMarker key={i} position={v.position} onClick={onClickMarker} />
+            <MapMarker key={i} position={v.position} onClick={() => onClickMarker(v)} />
           ))}
         </Map>
 
@@ -296,7 +307,7 @@ const WritePage = () => {
         </Card>
       </ModalContainer>
 
-      <SlideModal isActive={slideModalActive} onClickModalClose={onClickSlideModalClose} />
+      <SlideModal isActive={slideModalActive} onClickModalClose={onClickSlideModalClose} modalData={modalData} />
 
       <NavBar createModalOpen={onClickModalOpen} onClickSaveModalOpen={onClickSaveModalOpen} />
     </>
