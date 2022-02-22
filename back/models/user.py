@@ -17,7 +17,7 @@ class User():
             data = curs.fetchone()
             conn.close()
             return data
-        except:
+        except Exception as e:
             raise HTTPException(status_code=500,  detail={"result": "fail", "message": "서버에 문제가 발생했습니다."})
             # return {"result": "fail", "message": "디비 조회에 실패 했습니다."}
 
