@@ -1,26 +1,28 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import MapContainer from '../../containers/MapContainer'
 import { CardButtonGroup, CardInputGroup, ControllerBox, SelectContainerBox } from './styles'
-import Button from '../../components/common/Button'
-import DaumPostcode from 'react-daum-postcode'
-import ModalContainer from '../../containers/ModalContainer'
-import Card from '../../components/common/Card'
-import useInput from '../../hooks/useInput'
-import Input from '../../components/common/Input'
-import UploadBox from '../../components/write/UploadBox'
 import axios from 'axios'
-import ImageBox from '../../components/write/ImageBox'
+import useInput from '../../hooks/useInput'
 import useBoolean from '../../hooks/useBoolean'
-import Textarea from '../../components/common/Textarea'
+import Card from '../../components/common/Card'
+import Input from '../../components/common/Input'
 import NavBar from '../../components/write/NavBar'
+import Button from '../../components/common/Button'
+import ImageBox from '../../components/write/ImageBox'
+import MapContainer from '../../containers/MapContainer'
+import UploadBox from '../../components/write/UploadBox'
+import Textarea from '../../components/common/Textarea'
+import ModalContainer from '../../containers/ModalContainer'
 import DatePicker from 'react-datepicker'
 import { ko } from 'date-fns/esm/locale'
+import DaumPostcode from 'react-daum-postcode'
 import 'react-datepicker/dist/react-datepicker.css'
-import { Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk'
+import { Map, MapMarker } from 'react-kakao-maps-sdk'
 import SlideModal from '../../components/diary/SlideModal'
 import { ErrorMessageOpen } from '../../hooks/useToast'
+import useUser from '../../hooks/useUser'
 
 const WritePage = () => {
+  const { user, isLoading, isError } = useUser()
   const [mapList, setMapList] = useState<any>([])
 
   // useEffect(() => {
@@ -176,10 +178,6 @@ const WritePage = () => {
     onClickModalClose()
   }
 
-  useEffect(() => {
-    console.log(mapList)
-  }, [mapList])
-
   // 모달에 들어갈 데이터값
   const [modalData, setModalData] = useState<any>(null)
   // 저장 확인 모달 상태값
@@ -188,12 +186,26 @@ const WritePage = () => {
   // 저장 확인 모달 오픈 이벤트
   const onClickSaveModalOpen = () => {
     saveModalActiveToggle()
-    console.log('123123')
+  }
+
+  // 다이어리 저장
+  const onClickDiarySave = async () => {
+    console.log('aaaaa')
+    console.log(user)
+    console.log(mapList)
+    try {
+      const res = await axios.post('/api/diary', {
+        user_id: user.data.id,
+        list: mapList,
+      })
+      console.log(res)
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   // 마커 클릭 했을 떄 이벤트
   const onClickMarker = (v: any) => {
-    console.log(v)
     setModalData(v)
     setSlideModalActive(true)
   }
@@ -240,7 +252,7 @@ const WritePage = () => {
               <Button theme="tertiary" onClick={saveModalActiveToggle}>
                 취소
               </Button>
-              <Button>저장</Button>
+              <Button onClick={onClickDiarySave}>저장</Button>
             </div>
           </SelectContainerBox>
         </Card>
