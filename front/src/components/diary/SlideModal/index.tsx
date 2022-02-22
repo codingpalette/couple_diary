@@ -25,18 +25,6 @@ const SlideModal = ({ isActive, onClickModalClose, modalData }: SlideModalProps)
   const prevRef = useRef<HTMLDivElement>(null)
   const nextRef = useRef<HTMLDivElement>(null)
 
-  const images = [
-    {
-      original: 'https://placeimg.com/1080/1920/any',
-    },
-    {
-      original: 'https://picsum.photos/id/1015/1000/600/',
-    },
-    {
-      original: 'https://picsum.photos/id/1019/1000/600/',
-    },
-  ]
-
   return (
     <>
       <ModalContainer isActive={isActive} closeEvent={onClickModalClose} maxWidth="500px">
@@ -45,6 +33,7 @@ const SlideModal = ({ isActive, onClickModalClose, modalData }: SlideModalProps)
             <h4 className="title">{modalData.diaryTitle}</h4>
             <Swiper
               slidesPerView={1}
+              loop={true}
               // navigation={{
               //   // Both prevEl & nextEl are null at render so this does not work
               //   prevEl: prevRef.current ? prevRef.current : undefined,
@@ -67,7 +56,7 @@ const SlideModal = ({ isActive, onClickModalClose, modalData }: SlideModalProps)
                   swiper.navigation.update()
                 })
               }}
-              onSlideChange={() => console.log('slide change')}
+              // onSlideChange={() => console.log('slide change')}
             >
               <div className="navigation prev" ref={prevRef}>
                 <FontAwesomeIcon icon={faAngleLeft} size="3x" />
@@ -83,8 +72,10 @@ const SlideModal = ({ isActive, onClickModalClose, modalData }: SlideModalProps)
                 </SwiperSlide>
               ))}
             </Swiper>
-            <div>sdfsdd</div>
-            <Button onClick={onClickModalClose}>닫기</Button>
+            <div className="text_content">{modalData.contentText}</div>
+            <Button onClick={onClickModalClose} width="100%">
+              닫기
+            </Button>
           </SlideContainer>
         )}
       </ModalContainer>

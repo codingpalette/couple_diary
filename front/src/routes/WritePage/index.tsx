@@ -20,13 +20,7 @@ import { Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk'
 import SlideModal from '../../components/diary/SlideModal'
 import { ErrorMessageOpen } from '../../hooks/useToast'
 
-const options = {
-  center: new window.kakao.maps.LatLng(37.5705611277251, 126.987024769656),
-  level: 12,
-}
-
 const WritePage = () => {
-  const mapRef = useRef<HTMLDivElement>(null)
   const [mapList, setMapList] = useState<any>([])
 
   // useEffect(() => {
@@ -152,15 +146,19 @@ const WritePage = () => {
   const onClickMapSave = () => {
     if (mapObjData.fullAddr === '') {
       ErrorMessageOpen('주소를 입력해 주세요.')
+      return
     }
     if (diaryTitle.trim().length === 0) {
       ErrorMessageOpen('타이틀을 입력해 주세요.')
+      return
     }
     if (images.length === 0) {
       ErrorMessageOpen('한 장 이상의 이미지를 등록해 주세요.')
+      return
     }
     if (contentText.trim().length === 0) {
       ErrorMessageOpen('내용을 입력해 주세요.')
+      return
     }
 
     const data = {
@@ -277,7 +275,7 @@ const WritePage = () => {
           </CardInputGroup>
           <CardInputGroup>
             <div className="title">다이어리 제목</div>
-            <Input type="text" value={diaryTitle} onChange={onChangeDiaryTitle} />
+            <Input type="text" value={diaryTitle} onChange={onChangeDiaryTitle} maxLength={30} />
           </CardInputGroup>
           <CardInputGroup>
             <div className="title">사진 추가</div>

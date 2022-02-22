@@ -7,10 +7,12 @@ export const SlideContainer = styled.div`
   .title {
     font-size: 1.5rem;
     text-align: center;
+    margin-bottom: 1rem;
   }
 
   .swiper-container {
     position: relative;
+    background-color: #000;
   }
 
   .slide_box {
@@ -20,7 +22,6 @@ export const SlideContainer = styled.div`
       display: block;
       width: 100%;
       padding-bottom: 100%;
-      background-color: #000;
     }
     img {
       position: absolute;
@@ -47,5 +48,10 @@ export const SlideContainer = styled.div`
 
   .next {
     right: 10px;
+  }
+
+  .text_content {
+    margin: 2rem 0;
+    font-size: 12px;
   }
 `

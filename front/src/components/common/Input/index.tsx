@@ -8,12 +8,21 @@ export type InputProps = {
   type: string
   placeholder: string
   disabled?: boolean
+  maxLength?: number
 }
 
-const Input = ({ value, onChange, id, type, placeholder, disabled }: InputProps) => {
+const Input = ({ value, onChange, id, type, placeholder, disabled, maxLength }: InputProps) => {
   return (
     <>
-      <InputTag value={value} onChange={onChange} id={id} type={type} placeholder={placeholder} disabled={disabled} />
+      <InputTag
+        value={value}
+        onChange={onChange}
+        id={id}
+        type={type}
+        placeholder={placeholder}
+        disabled={disabled}
+        maxLength={maxLength}
+      />
     </>
   )
 }
