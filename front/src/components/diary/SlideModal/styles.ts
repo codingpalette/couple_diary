@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { colors } from '../../../assets/css/GlobalStyles'
 
 export const SlideContainer = styled.div`
   padding: 1rem;
@@ -52,6 +53,8 @@ export const SlideContainer = styled.div`
 
   .text_content {
     margin: 2rem 0;
-    font-size: 12px;
+    font-size: 14px;
+    color: ${colors.Gray_700};
+    font-weight: 600;
   }
 `
