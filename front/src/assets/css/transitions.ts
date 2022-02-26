@@ -71,6 +71,24 @@ const slideDown = keyframes`
   }
 `
 
+const slideRightOpen = keyframes`
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+`
+
+const slideRightClose = keyframes`
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+`
+
 const transitions = {
   fadeIn,
   fadeOut,
@@ -79,6 +97,8 @@ const transitions = {
   popIn,
   slideUp,
   slideDown,
+  slideRightOpen,
+  slideRightClose,
 }
 
 export default transitions
