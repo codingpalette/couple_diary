@@ -5,6 +5,7 @@ import App from './App'
 import GlobalStyles from './assets/css/GlobalStyles'
 import axios from 'axios'
 import './assets/css/App.css'
+import { RecoilRoot } from 'recoil'
 
 axios.defaults.withCredentials = true
 axios.defaults.baseURL =
@@ -14,7 +15,9 @@ ReactDOM.render(
   <React.StrictMode>
     <GlobalStyles />
     <BrowserRouter>
-      <App />
+      <RecoilRoot>
+        <App />
+      </RecoilRoot>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root'),
