@@ -20,6 +20,7 @@ import { Map, MapMarker } from 'react-kakao-maps-sdk'
 import SlideModal from '../../components/diary/SlideModal'
 import { ErrorMessageOpen } from '../../hooks/useToast'
 import useUser from '../../hooks/useUser'
+import BackLoading from '../../components/common/BackLoading'
 
 const WritePage = () => {
   const { user, isLoading, isError } = useUser()
@@ -46,6 +47,8 @@ const WritePage = () => {
   const [createModalActive, setCreateModalActive] = useState(false)
   // 마커 클릭시 나오는 슬라이드 모달 온,오프 상태값
   const [slideModalActive, setSlideModalActive] = useState(false)
+  // back 로딩 상태값
+  const [backLoadingActive, setBackLoadingActive] = useState(false)
   // 슬라이드 모달 닫기 함수
   const onClickSlideModalClose = () => {
     setSlideModalActive(false)
@@ -106,6 +109,7 @@ const WritePage = () => {
       const files = e.target.files
       const formData = new FormData()
       formData.append('file', files[0])
+      setBackLoadingActive(true)
       try {
         const res = await axios.post('/api/image/upload', formData)
         // console.log(res)
@@ -114,6 +118,8 @@ const WritePage = () => {
         }
       } catch (e) {
         console.log(e)
+      } finally {
+        setBackLoadingActive(false)
       }
     },
     [images],
@@ -305,6 +311,8 @@ const WritePage = () => {
       <SlideModal isActive={slideModalActive} onClickModalClose={onClickSlideModalClose} modalData={modalData} />
 
       <NavBar createModalOpen={onClickCreateModalOpen} onClickSaveModalOpen={onClickSaveModalOpen} />
+
+      <BackLoading isActive={backLoadingActive} />
     </>
   )
 }
