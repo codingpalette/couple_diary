@@ -13,12 +13,12 @@ axios.defaults.baseURL =
 
 ReactDOM.render(
   <React.StrictMode>
-    <GlobalStyles />
-    <BrowserRouter>
-      <RecoilRoot>
+    <RecoilRoot>
+      <GlobalStyles />
+      <BrowserRouter>
         <App />
-      </RecoilRoot>
-    </BrowserRouter>
+      </BrowserRouter>
+    </RecoilRoot>
   </React.StrictMode>,
   document.getElementById('root'),
 )
