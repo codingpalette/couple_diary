@@ -18,6 +18,7 @@ export interface mapListTypes {
 
 export interface diaryStateTypes {
   location: string
+  description: string
   mapList: [] | mapListTypes[]
 }
 
@@ -25,6 +26,7 @@ const diaryState = atom<diaryStateTypes>({
   key: 'diary-state',
   default: {
     location: '',
+    description: '',
     mapList: [],
   },
 })
