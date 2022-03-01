@@ -82,7 +82,7 @@ const Header = () => {
           onResetPasswordCheck()
           if (mode === 'login') {
             onClickModalClose()
-            mutate()
+            await mutate()
           } else {
             SuccessMessageOpen(res.data.message)
           }

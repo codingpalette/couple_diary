@@ -10,15 +10,15 @@ export type MenuListProps = {
   // img: boolean
   // imgSrc?: string
   icon?: React.ReactNode
-  // onClick?: (e?: React.MouseEvent<HTMLButtonElement>) => void
+  onClick?: (e?: React.MouseEvent<HTMLAnchorElement>) => void
 }
 
-const MenuList = ({ children, href, icon }: MenuListProps) => {
+const MenuList = ({ children, href, icon, onClick }: MenuListProps) => {
   return (
     <>
       <MenuListContainer>
         <div className="list">
-          <ListLink to={href}>
+          <ListLink to={href} onClick={onClick}>
             <span className="icon">{icon}</span>
             <p>{children}</p>
             <span className="icon2">
