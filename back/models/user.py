@@ -39,8 +39,8 @@ class User():
         try:
             conn = await basic()
             curs = conn.cursor(pymysql.cursors.DictCursor)
-            sql = ''' INSERT INTO user (email, name, password) VALUES(%s, %s, %s) ; '''
-            curs.execute(sql, (item.email, item.name, item.password))
+            sql = ''' INSERT INTO user (email, nickname, password) VALUES(%s, %s, %s) ; '''
+            curs.execute(sql, (item.email, item.nickname, item.password))
             conn.commit()
             conn.close()
             return {"result": "success", "message": "회원가입에 성공했습니다"}
@@ -67,7 +67,7 @@ class User():
         try:
             conn = await basic()
             curs = conn.cursor(pymysql.cursors.DictCursor)
-            sql = '''SELECT id, email, name, level, refresh_token FROM user WHERE refresh_token = %s;'''
+            sql = '''SELECT id, email, nickname, level, refresh_token FROM user WHERE refresh_token = %s;'''
             curs.execute(sql, refresh_token)
             data = curs.fetchone()
             conn.close()

@@ -21,7 +21,7 @@ const Header = () => {
   // const [isActive, setIsActive] = useState(false)
   const [mode, setMode] = useState('login')
   const [email, onChangeEmail, onResetEmail] = useInput('')
-  const [name, onChangeName, onResetName] = useInput('')
+  const [nickname, onChangeNickname, onResetNickname] = useInput('')
   const [password, onChangePassword, onResetPassword] = useInput('')
   const [passwordCheck, onChangePasswordCheck, onResetPasswordCheck] = useInput('')
 
@@ -46,7 +46,7 @@ const Header = () => {
         return
       }
 
-      if (mode === 'create' && name.trim().length === 0) {
+      if (mode === 'create' && nickname.trim().length === 0) {
         ErrorMessageOpen('이름을 입력해 주세요')
         return
       }
@@ -71,13 +71,13 @@ const Header = () => {
         } else {
           res = await axios.post('/api/user', {
             email,
-            name,
+            nickname,
             password,
           })
         }
         if (res.data.result === 'success') {
           onResetEmail()
-          onResetName()
+          onResetNickname()
           onResetPassword()
           onResetPasswordCheck()
           if (mode === 'login') {
@@ -97,7 +97,7 @@ const Header = () => {
         }
       }
     },
-    [mode, email, name, password, passwordCheck],
+    [mode, email, nickname, password, passwordCheck],
   )
 
   return (
@@ -125,7 +125,9 @@ const Header = () => {
           <LoginFormBox>
             <form onSubmit={onSubmitLogin}>
               <Input value={email} onChange={onChangeEmail} placeholder="이메일" />
-              {mode === 'create' && <Input value={name} onChange={onChangeName} type="text" placeholder="이름" />}
+              {mode === 'create' && (
+                <Input value={nickname} onChange={onChangeNickname} type="text" placeholder="닉네임" />
+              )}
               <Input value={password} onChange={onChangePassword} type="password" placeholder="비밀번호" />
               {mode === 'create' && (
                 <Input

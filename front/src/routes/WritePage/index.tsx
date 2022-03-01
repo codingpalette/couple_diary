@@ -21,12 +21,15 @@ import SlideModal from '../../components/diary/SlideModal'
 import { ErrorMessageOpen } from '../../hooks/useToast'
 import useUser from '../../hooks/useUser'
 import BackLoading from '../../components/common/BackLoading'
+import SaveFormModal from '../../components/write/SaveFormModal'
+import { useRecoilState } from 'recoil'
+import diaryState from '../../stores/useDiaryState'
+import { checkSpecial } from '../../hooks/useStringCheck'
 
 const WritePage = () => {
   const { user, isLoading, isError } = useUser()
-
-  // 다이어리 리스트
-  const [mapList, setMapList] = useState<any>([])
+  // 다이어리 값
+  const [useDiary, setUseDiary] = useRecoilState(diaryState)
   // 달력 상태값
   const [startDate, setStartDate] = useState<Date | null>(new Date())
   // 모달창 주소검색 인풋 상태값
@@ -49,6 +52,8 @@ const WritePage = () => {
   const [slideModalActive, setSlideModalActive] = useState(false)
   // back 로딩 상태값
   const [backLoadingActive, setBackLoadingActive] = useState(false)
+  // save form 모달 상태값
+  const [saveFromModalActive, setSaveFormModalActive] = useState(false)
   // 슬라이드 모달 닫기 함수
   const onClickSlideModalClose = () => {
     setSlideModalActive(false)
@@ -166,7 +171,8 @@ const WritePage = () => {
     }
     console.log('data', data)
     // setMapList([...mapList, { content: '', position: { lng: 126.987024769656, lat: 37.5705611277251 } }])
-    setMapList([...mapList, data])
+    // setMapList([...mapList, data])
+    setUseDiary({ ...useDiary, mapList: [...useDiary.mapList, data] })
     // setAddressSearchOpen(false)
     onClickCreateModalClose()
   }
@@ -178,7 +184,12 @@ const WritePage = () => {
 
   // 저장 확인 모달 오픈 이벤트
   const onClickSaveModalOpen = () => {
-    saveModalActiveToggle()
+    setSaveFormModalActive(true)
+    // saveModalActiveToggle()
+  }
+
+  const onClickSaveModalClose = () => {
+    setSaveFormModalActive(false)
   }
 
   // 다이어리 저장
@@ -186,7 +197,6 @@ const WritePage = () => {
     try {
       const res = await axios.post('/api/diary', {
         user_id: user.data.id,
-        list: mapList,
       })
       console.log(res)
     } catch (e) {
@@ -200,6 +210,36 @@ const WritePage = () => {
     setSlideModalActive(true)
   }
 
+  // 다이어리 임시저장
+  const temporarySave = async () => {
+    // console.log('11111')
+    // console.log(useDiary.location)
+    if (useDiary.location.trim().length === 0) {
+      ErrorMessageOpen('다이어리 주소를 입력해 주세요.')
+    }
+    if (checkSpecial(useDiary.location)) {
+      ErrorMessageOpen('특수문자는 사용이 불가능 합니다.')
+    }
+
+    try {
+      const res = await axios.post('/api/save', {
+        user_id: user.data.id,
+        location: useDiary.location,
+        description: useDiary.description,
+        mapList: useDiary.mapList,
+      })
+      console.log(res)
+    } catch (e: any) {
+      if (e.response.data) {
+        console.log(e.response.data)
+        ErrorMessageOpen(e.response.data.message)
+      }
+      if (e.response.data.detail) {
+        ErrorMessageOpen(e.response.data.detail.message)
+      }
+    }
+  }
+
   return (
     <>
       <MapContainer>
@@ -209,7 +249,7 @@ const WritePage = () => {
         {/*  </div>*/}
         {/*</ControllerBox>*/}
         <Map center={{ lat: 36.2683, lng: 127.6358 }} style={{ width: '100%', height: '100%' }} level={12}>
-          {mapList.map((v: any, i: any) => (
+          {useDiary.mapList.map((v: any, i: any) => (
             <MapMarker key={i} position={v.position} onClick={() => onClickMarker(v)} />
           ))}
         </Map>
@@ -233,7 +273,7 @@ const WritePage = () => {
       </ModalContainer>
 
       <ModalContainer isActive={createModalActive} closeEvent={onClickCreateModalClose} maxWidth="500px">
-        <Card title="리스트 추가">
+        <Card title="카드 추가">
           <CardInputGroup>
             <div className="title">날짜 선택</div>
             <DatePicker
@@ -260,7 +300,7 @@ const WritePage = () => {
             {addressSearchOpen && <DaumPostcode autoClose={true} onComplete={onCompletePost} />}
           </CardInputGroup>
           <CardInputGroup>
-            <div className="title">다이어리 제목</div>
+            <div className="title">카드 제목</div>
             <Input type="text" value={diaryTitle} onChange={onChangeDiaryTitle} maxLength={30} />
           </CardInputGroup>
           <CardInputGroup>
@@ -313,6 +353,8 @@ const WritePage = () => {
       <NavBar createModalOpen={onClickCreateModalOpen} onClickSaveModalOpen={onClickSaveModalOpen} />
 
       <BackLoading isActive={backLoadingActive} />
+
+      <SaveFormModal isActive={saveFromModalActive} closeEvent={onClickSaveModalClose} temporarySave={temporarySave} />
     </>
   )
 }
