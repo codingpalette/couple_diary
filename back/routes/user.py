@@ -82,7 +82,7 @@ async def user_login(item: LoginType):
             else:
                 return JSONResponse(status_code=401, content={"result": "fail", "message": "로그인에 실패했습니다"})
 
-@router.post('logout')
+@router.post('/logout')
 async def user_logout(request: Request):
     # print('로그아웃 시작')
     # print(request.cookies)
