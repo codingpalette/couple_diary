@@ -5,6 +5,7 @@ import Button from '../../common/Button'
 import { useRecoilState } from 'recoil'
 import diaryState from '../../../stores/useDiaryState'
 import Textarea from '../../common/Textarea'
+import useUser from '../../../hooks/useUser'
 
 export type SaveFormModalProps = {
   // children: React.ReactNode
@@ -15,8 +16,13 @@ export type SaveFormModalProps = {
 }
 
 const SaveFormModal = ({ isActive, closeEvent, temporarySave }: SaveFormModalProps) => {
+  const { user, isLoading, isError, mutate } = useUser()
   const [useDiary, setUseDiary] = useRecoilState(diaryState)
   const [closed, setClosed] = useState(true)
+
+  useEffect(() => {
+    console.log(user)
+  }, [user])
 
   useEffect(() => {
     document.body.style.overflowY = isActive ? 'hidden' : 'initial'
