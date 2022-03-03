@@ -62,7 +62,9 @@ const SaveFormModal = ({ isActive, closeEvent, temporarySave }: SaveFormModalPro
           <div className="input_group">
             <h4>다이어리 주소</h4>
             <span>특수문자 제외</span>
-            <span>https://커다/{useDiary.location}</span>
+            <span>
+              https://커다/{user.data.nickname}/{useDiary.location}
+            </span>
             <Input
               value={useDiary.location}
               onChange={onChangeLocation}
