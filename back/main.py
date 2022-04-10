@@ -1,10 +1,15 @@
 from typing import Optional
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from routes import user, image, diary, save
+from routes import user
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from middlewares.auth_check import access_control
+
+from sqlalchemy.orm import Session
+from database.connection import get_db, Base, engine
+
 
 
 class SPAStaticFiles(StaticFiles):
@@ -15,6 +20,8 @@ class SPAStaticFiles(StaticFiles):
         return response
 
 def create_app():
+
+    Base.metadata.create_all(bind=engine)
 
     app = FastAPI()
 
@@ -34,7 +41,8 @@ def create_app():
 
 
     @app.get("/test")
-    def read_root():
+    def read_root(db: Session = Depends(get_db)):
+        print(db)
         return {"Hello": "World"}
 
 
@@ -44,11 +52,15 @@ def create_app():
 
 
     app.include_router(user.router, tags=["user"], prefix="/api")
-    app.include_router(image.router, tags=["image"], prefix="/api")
-    app.include_router(diary.router, tags=["diary"], prefix="/api")
-    app.include_router(save.router, tags=["save"], prefix="/api")
+    # app.include_router(image.router, tags=["image"], prefix="/api")
+    # app.include_router(diary.router, tags=["diary"], prefix="/api")
+    # app.include_router(save.router, tags=["save"], prefix="/api")
 
-    app.mount("/", SPAStaticFiles(directory="public", html=True), name="public")
+    app.mount("/", StaticFiles(directory="public", html=True))
+
+    @app.exception_handler(404)
+    async def not_found(request, exc):
+        return FileResponse('public/index.html')
 
     return app
 

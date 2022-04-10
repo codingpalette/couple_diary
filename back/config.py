@@ -8,6 +8,7 @@ def conf():
     config = {
         "HOST": os.getenv('HOST'),
         "DATABASE": os.getenv('DATABASE'),
+        "DATABASE_TYPE": os.getenv('DATABASE_TYPE'),
         "USERNAME": os.getenv('DBUSER'),
         "PASSWORD": os.getenv('PASSWORD'),
         "TOKEN_KEY": os.getenv('TOKEN_KEY'),
