@@ -5,6 +5,7 @@
 ```
 HOST="host"
 DATABASE="database"
+DATABASE_TYPE="mysql+pymysql"
 DBUSER="dbuser"
 PASSWORD="password"
 TOKEN_KEY="key"
