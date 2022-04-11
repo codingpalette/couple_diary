@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from crud.base import CRUDBase
 from models.user import User
-from schemas.user import UserEmail, UserNickname, UserCreate, UserLogin
+from schemas.user import UserEmail, UserNickname, UserCreate, UserLogin, UserTokenUpdate
 
 class CRUDUser(CRUDBase[User, UserCreate, UserLogin]):
 
@@ -24,6 +24,13 @@ class CRUDUser(CRUDBase[User, UserCreate, UserLogin]):
         db.commit()
         db.refresh(db_obj)
         return db_obj
+
+    def token_update(self, db: Session, user: UserEmail, refresh_token: str) -> User:
+        item = self.get_user_by_email(db, user)
+        item.refresh_token = refresh_token
+        db.commit()
+        db.refresh(item)
+        return item
 
 
 user = CRUDUser(User)

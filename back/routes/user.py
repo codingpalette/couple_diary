@@ -7,6 +7,7 @@ from database.connection import get_db
 import schemas
 import crud
 import bcrypt
+from functions import token
 # from fastapi.responses import JSONResponse
 # from starlette.requests import Request
 # from models.user import User
@@ -59,7 +60,27 @@ def user_create(req: schemas.UserCreate, db: Session = Depends(get_db)):
 
     # return crud.user.user_create(db, req)
 
-
+@router.post('/login')
+def user_login(req: schemas.UserLogin, db: Session = Depends(get_db)):
+    user_email_info = crud.user.get_user_by_email(db, req)
+    if not user_email_info:
+        return JSONResponse(status_code=401, content={"result": "fail", "message": "존재하지 않는 아이디 입니다"})
+    else:
+        password_check = bcrypt.checkpw(req.password.encode('utf-8'), user_email_info.password.encode('utf-8'))
+        if not password_check:
+            return JSONResponse(status_code=401, content={"result": "fail", "message": "비밀번호가 틀립니다"})
+        else:
+            access_token = token.create_token('access_token', user_email_info)
+            refresh_token = token.create_token('refresh_token')
+            token_update = crud.user.token_update(db, req, refresh_token)
+            if token_update:
+                content = {"result": "success", "message": "로그인 성공"}
+                response = JSONResponse(content=content)
+                response.set_cookie(key="access_token", value=access_token)
+                response.set_cookie(key="refresh_token", value=refresh_token)
+                return response
+            else:
+                return JSONResponse(status_code=401, content={"result": "fail", "message": "로그인에 실패 했습니다"})
 
 #
 # @router.get('')

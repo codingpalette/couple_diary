@@ -23,3 +23,6 @@ class UserCreate(UserBase):
 
 class UserLogin(UserBase):
     password: str
+
+class UserTokenUpdate(UserBase):
+    refresh_token: str
