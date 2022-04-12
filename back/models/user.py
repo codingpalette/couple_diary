@@ -3,7 +3,6 @@ from database.connection import Base, engine
 from sqlalchemy.orm import relationship
 
 
-
 class User(Base):
     __tablename__ = "user"
 
@@ -18,8 +17,7 @@ class User(Base):
     deleted_at = Column(DateTime(6))
 
     diary = relationship("Diary", back_populates="user")
-
-
+    diary_save = relationship("DiarySave", back_populates="user")
 
 #
 # from fastapi.responses import JSONResponse

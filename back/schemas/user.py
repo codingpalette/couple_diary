@@ -9,11 +9,14 @@ class UserBase(BaseModel):
     class Config:
         orm_mode = True
 
+
 class UserEmail(UserBase):
     pass
 
+
 class UserNickname(UserBase):
     nickname: str
+
 
 class UserCreate(UserBase):
     nickname: str
@@ -23,6 +26,7 @@ class UserCreate(UserBase):
 
 class UserLogin(UserBase):
     password: str
+
 
 class UserTokenUpdate(UserBase):
     refresh_token: str

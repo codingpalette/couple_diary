@@ -2,7 +2,7 @@ from typing import Optional
 from fastapi import FastAPI, Depends
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from routes import user, image, diary
+from routes import user, image, diary, diary_save
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from middlewares.auth_check import access_control
@@ -54,6 +54,7 @@ def create_app():
     app.include_router(user.router, tags=["user"], prefix="/api")
     app.include_router(image.router, tags=["image"], prefix="/api")
     app.include_router(diary.router, tags=["diary"], prefix="/api")
+    app.include_router(diary_save.router, tags=["diary_save"], prefix="/api")
     # app.include_router(save.router, tags=["save"], prefix="/api")
 
     app.mount("/", StaticFiles(directory="public", html=True))

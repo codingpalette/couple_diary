@@ -2,7 +2,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class DiaryBase(BaseModel):
+class DiarySaveBase(BaseModel):
     pass
 
     class Config:
