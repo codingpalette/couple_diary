@@ -110,7 +110,7 @@ const Header = () => {
           </div>
 
           <div className="button_box">
-            {userData && userData.result === 'success' ? (
+            {userData && userData.result === 'success' && !userError ? (
               <Link to="/menu">
                 <FontAwesomeIcon icon={faUserCircle} size="2x" />
               </Link>

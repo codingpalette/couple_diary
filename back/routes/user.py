@@ -99,6 +99,16 @@ def user_login(req: schemas.UserLogin, db: Session = Depends(get_db)):
             else:
                 return JSONResponse(status_code=401, content={"result": "fail", "message": "로그인에 실패 했습니다"})
 
+@router.post('/logout')
+def user_logout(request: Request, db: Session = Depends(get_db)):
+    cookies = request.cookies
+    crud.user.user_logout(db, cookies.get("refresh_token"))
+    content = {"result": "success", "message": "로그아웃 성공"}
+    response = JSONResponse(content=content)
+    response.delete_cookie("access_token")
+    response.delete_cookie("refresh_token")
+    return response
+
 #
 # @router.get('')
 # def user_get():

@@ -32,5 +32,13 @@ class CRUDUser(CRUDBase[User, UserCreate, UserLogin]):
         db.refresh(item)
         return item
 
+    def user_logout(self, db: Session, refresh_token: str) -> User:
+        item = db.query(User).filter(User.refresh_token == refresh_token).first()
+        if item:
+            item.refresh_token = None
+            db.commit()
+            db.refresh(item)
+        return item
+
 
 user = CRUDUser(User)
