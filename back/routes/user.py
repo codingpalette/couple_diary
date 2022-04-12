@@ -2,21 +2,25 @@ from typing import Optional
 from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
+from starlette.requests import Request
 from sqlalchemy.orm import Session
 from database.connection import get_db
 import schemas
 import crud
 import bcrypt
 from functions import token
+from config import conf
+import jwt
+import json
 # from fastapi.responses import JSONResponse
-# from starlette.requests import Request
+
 # from models.user import User
 # from pydantic import BaseModel
 # import bcrypt
-# import jwt
+
 # from functions import token
 #
-# from config import conf
+
 #
 # class CreateType(BaseModel):
 #     email: str
@@ -37,6 +41,28 @@ from functions import token
 router = APIRouter(
     prefix="/user",
 )
+
+@router.get('/test')
+async def test(request: Request):
+    config = conf()
+    key = config['TOKEN_KEY']
+    refresh_token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QGNvLmNvbSIsIm5pY2tuYW1lIjoidGVzdCIsImxldmVsIjoxLCJleHAiOjE2NTA5MzcyNjh9.B5qvaS8DHTGYQbR2Uv1yUylXHpf_horfxMCb2N31Ofk'
+    decode = jwt.decode(refresh_token, key, algorithms=['HS256'])
+    aa = token.create_token('access_token', decode, True)
+    print(aa)
+    return True
+
+# 유저 인증
+@router.get('/check')
+def user_check(request: Request):
+    config = conf()
+    key = config['TOKEN_KEY']
+    access_token = request.state.access_token
+    decode = jwt.decode(access_token, key, algorithms=['HS256'])
+    content = {"result": "success", "message": "유저인증에 성공했습니다.", "data": decode}
+    response = JSONResponse(content=content)
+    response.set_cookie(key="access_token", value=access_token)
+    return response
 
 # 유저 생성
 @router.post('')
@@ -71,7 +97,7 @@ def user_login(req: schemas.UserLogin, db: Session = Depends(get_db)):
             return JSONResponse(status_code=401, content={"result": "fail", "message": "비밀번호가 틀립니다"})
         else:
             access_token = token.create_token('access_token', user_email_info)
-            refresh_token = token.create_token('refresh_token')
+            refresh_token = token.create_token('refresh_token', user_email_info)
             token_update = crud.user.token_update(db, req, refresh_token)
             if token_update:
                 content = {"result": "success", "message": "로그인 성공"}
@@ -88,17 +114,7 @@ def user_login(req: schemas.UserLogin, db: Session = Depends(get_db)):
 #     return {"result": "success", "message": "테스트 성공!"}
 #
 #
-# @router.get('/check')
-# def user_check(request: Request):
-#     config = conf()
-#     key = config['TOKEN_KEY']
-#     access_token = request.state.access_token
-#
-#     decode = jwt.decode(access_token, key, algorithms=['HS256'])
-#     content = {"result": "success", "message": "유저인증에 성공했습니다.", "data": {"id": decode['id'],"email": decode['email'], "nickname": decode['nickname'], "level": decode["level"] }}
-#     response = JSONResponse(content=content)
-#     response.set_cookie(key="access_token", value=access_token)
-#     return response
+
 #
 #
 #

@@ -19,15 +19,16 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { Map, MapMarker } from 'react-kakao-maps-sdk'
 import SlideModal from '../../components/diary/SlideModal'
 import { ErrorMessageOpen } from '../../hooks/useToast'
-import useUser from '../../hooks/useUser'
 import BackLoading from '../../components/common/BackLoading'
 import SaveFormModal from '../../components/write/SaveFormModal'
 import { useRecoilState } from 'recoil'
 import diaryState from '../../stores/useDiaryState'
 import { checkSpecial } from '../../hooks/useStringCheck'
+import useSWR from 'swr'
+import fetcher from '../../hooks/fetcher'
 
 const WritePage = () => {
-  const { user, isLoading, isError } = useUser()
+  const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
   // 다이어리 값
   const [useDiary, setUseDiary] = useRecoilState(diaryState)
   // 달력 상태값
@@ -196,7 +197,7 @@ const WritePage = () => {
   const onClickDiarySave = async () => {
     try {
       const res = await axios.post('/api/diary', {
-        user_id: user.data.id,
+        user_id: userData.data.id,
       })
       console.log(res)
     } catch (e) {
@@ -223,7 +224,7 @@ const WritePage = () => {
 
     try {
       const res = await axios.post('/api/save', {
-        user_id: user.data.id,
+        user_id: userData.data.id,
         location: useDiary.location,
         description: useDiary.description,
         mapList: useDiary.mapList,

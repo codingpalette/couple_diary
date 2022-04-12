@@ -6,10 +6,11 @@ import iphone from '../../assets/images/iPhone12.png'
 import sample from '../../assets/images/sample.png'
 import Button from '../../components/common/Button'
 import useLoginModalSWR from '../../stores/useLoginModalSWR'
-import useUser from '../../hooks/useUser'
+import useSWR from 'swr'
+import fetcher from '../../hooks/fetcher'
 
 const MainPage = () => {
-  const { user, isLoading } = useUser()
+  const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
   const { mutate: setIsActive } = useLoginModalSWR()
   const navigate = useNavigate()
 
@@ -34,15 +35,15 @@ const MainPage = () => {
                 보관하세요
               </h1>
             </div>
-            {!isLoading && (
-              <div className="button_box">
-                {user && user.result === 'success' ? (
-                  <Button onClick={() => navigate('/menu')}>시작하기</Button>
-                ) : (
-                  <Button onClick={() => setIsActive(true)}>시작하기</Button>
-                )}
-              </div>
-            )}
+
+            <div className="button_box">
+              {userData && userData.result === 'success' ? (
+                <Button onClick={() => navigate('/menu')}>시작하기</Button>
+              ) : (
+                <Button onClick={() => setIsActive(true)}>시작하기</Button>
+              )}
+            </div>
+
             <div>
               <div className="image_box">
                 <img src={iphone} alt="iphone" className="iphone" />

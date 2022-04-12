@@ -12,10 +12,11 @@ import { ErrorMessageOpen, SuccessMessageOpen } from '../../../hooks/useToast'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
 import useLoginModalSWR from '../../../stores/useLoginModalSWR'
-import useUser from '../../../hooks/useUser'
+import useSWR from 'swr'
+import fetcher from '../../../hooks/fetcher'
 
 const Header = () => {
-  const { user, isLoading, isError, mutate } = useUser()
+  const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
 
   const { data: isActive, mutate: setIsActive } = useLoginModalSWR()
   // const [isActive, setIsActive] = useState(false)
@@ -82,7 +83,7 @@ const Header = () => {
           onResetPasswordCheck()
           if (mode === 'login') {
             onClickModalClose()
-            await mutate()
+            await userMutate()
           } else {
             SuccessMessageOpen(res.data.message)
           }
@@ -107,17 +108,16 @@ const Header = () => {
           <div className="logo">
             <Link to="/">로고</Link>
           </div>
-          {!isLoading && (
-            <div className="button_box">
-              {user && user.result === 'success' ? (
-                <Link to="/menu">
-                  <FontAwesomeIcon icon={faUserCircle} size="2x" />
-                </Link>
-              ) : (
-                <Button onClick={onClickModalOpen}>로그인</Button>
-              )}
-            </div>
-          )}
+
+          <div className="button_box">
+            {userData && userData.result === 'success' ? (
+              <Link to="/menu">
+                <FontAwesomeIcon icon={faUserCircle} size="2x" />
+              </Link>
+            ) : (
+              <Button onClick={onClickModalOpen}>로그인</Button>
+            )}
+          </div>
         </HeaderTag>
       </HeaderBox>
       <ModalContainer isActive={isActive} closeEvent={onClickModalClose} maxWidth="400px">

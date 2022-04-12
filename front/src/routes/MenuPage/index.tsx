@@ -3,12 +3,13 @@ import SubHeader from '../../components/common/SubHeader'
 import MenuList from '../../components/common/MenuList'
 import MainContainer from '../../containers/MainContainer'
 
-import useUser from '../../hooks/useUser'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import useSWR from 'swr'
+import fetcher from '../../hooks/fetcher'
 
 const MenuPage = () => {
-  const { user, isLoading, isError, mutate } = useUser()
+  const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
   const navigate = useNavigate()
 
   const onClickLogOut = async (e: any) => {
@@ -16,7 +17,7 @@ const MenuPage = () => {
     try {
       const res = await axios.post('/api/user/logout')
       if (res.data.result === 'success') {
-        await mutate()
+        await userMutate()
         navigate('/')
       }
     } catch (e) {
@@ -25,17 +26,10 @@ const MenuPage = () => {
   }
 
   useEffect(() => {
-    if (!user && !isLoading && isError) {
+    if (userError) {
       navigate('/')
     }
-  }, [user, isLoading, isError])
-
-  if (isLoading)
-    return (
-      <>
-        <div>Loading.....</div>
-      </>
-    )
+  }, [navigate, userError])
 
   return (
     <>

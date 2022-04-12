@@ -5,7 +5,8 @@ import Button from '../../common/Button'
 import { useRecoilState } from 'recoil'
 import diaryState from '../../../stores/useDiaryState'
 import Textarea from '../../common/Textarea'
-import useUser from '../../../hooks/useUser'
+import useSWR from 'swr'
+import fetcher from '../../../hooks/fetcher'
 
 export type SaveFormModalProps = {
   // children: React.ReactNode
@@ -16,13 +17,13 @@ export type SaveFormModalProps = {
 }
 
 const SaveFormModal = ({ isActive, closeEvent, temporarySave }: SaveFormModalProps) => {
-  const { user, isLoading, isError, mutate } = useUser()
+  const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
   const [useDiary, setUseDiary] = useRecoilState(diaryState)
   const [closed, setClosed] = useState(true)
 
   useEffect(() => {
-    console.log(user)
-  }, [user])
+    console.log(userData)
+  }, [userData])
 
   useEffect(() => {
     document.body.style.overflowY = isActive ? 'hidden' : 'initial'
@@ -63,7 +64,7 @@ const SaveFormModal = ({ isActive, closeEvent, temporarySave }: SaveFormModalPro
             <h4>다이어리 주소</h4>
             <span>특수문자 제외</span>
             <span>
-              https://커다/{user.data.nickname}/{useDiary.location}
+              https://커다/{userData.data.nickname}/{useDiary.location}
             </span>
             <Input
               value={useDiary.location}
