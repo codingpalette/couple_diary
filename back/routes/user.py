@@ -42,15 +42,6 @@ router = APIRouter(
     prefix="/user",
 )
 
-@router.get('/test')
-async def test(request: Request):
-    config = conf()
-    key = config['TOKEN_KEY']
-    refresh_token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QGNvLmNvbSIsIm5pY2tuYW1lIjoidGVzdCIsImxldmVsIjoxLCJleHAiOjE2NTA5MzcyNjh9.B5qvaS8DHTGYQbR2Uv1yUylXHpf_horfxMCb2N31Ofk'
-    decode = jwt.decode(refresh_token, key, algorithms=['HS256'])
-    aa = token.create_token('access_token', decode, True)
-    print(aa)
-    return True
 
 # 유저 인증
 @router.get('/check')
