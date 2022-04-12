@@ -31,6 +31,9 @@ const WritePage = () => {
   const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
   // 다이어리 값
   const [useDiary, setUseDiary] = useRecoilState(diaryState)
+  useEffect(() => {
+    console.log(useDiary)
+  }, [useDiary])
   // 달력 상태값
   const [startDate, setStartDate] = useState<Date | null>(new Date())
   // 모달창 주소검색 인풋 상태값
@@ -207,8 +210,14 @@ const WritePage = () => {
 
   // 마커 클릭 했을 떄 이벤트
   const onClickMarker = (v: any) => {
-    setModalData(v)
-    setSlideModalActive(true)
+    const mapList = useDiary.mapList.filter(f => f.position.lng === v.lng && f.position.lat === v.lat)
+    if (mapList.length > 1) {
+      alert('2개 이상의 같은 지역')
+    } else {
+      alert('1개만 있음')
+    }
+    // setModalData(v)
+    // setSlideModalActive(true)
   }
 
   // 다이어리 임시저장
@@ -251,7 +260,7 @@ const WritePage = () => {
         {/*</ControllerBox>*/}
         <Map center={{ lat: 36.2683, lng: 127.6358 }} style={{ width: '100%', height: '100%' }} level={12}>
           {useDiary.mapList.map((v: any, i: any) => (
-            <MapMarker key={i} position={v.position} onClick={() => onClickMarker(v)} />
+            <MapMarker key={i} position={v.position} onClick={() => onClickMarker(v.position)} />
           ))}
         </Map>
 
