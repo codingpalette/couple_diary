@@ -27,6 +27,7 @@ import { checkSpecial } from '../../hooks/useStringCheck'
 import useSWR from 'swr'
 import fetcher from '../../hooks/fetcher'
 import OverlapListModal from '../../components/diary/OverlapListModal'
+import dayjs from 'dayjs'
 
 const WritePage = () => {
   const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
@@ -173,6 +174,7 @@ const WritePage = () => {
 
     const data = {
       diaryTitle,
+      date: dayjs(startDate).format('YYYY-MM-DD'),
       images,
       contentText,
       fullAddr: mapInputAddress,

@@ -4,6 +4,7 @@ import { OverlapContent } from './styles'
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from '../../common/Button'
+import Card from '../../common/Card'
 
 export type OverlapListModalProps = {
   /** 모달 온, 오프 여부 **/
@@ -20,27 +21,30 @@ const OverlapListModal = ({ isActive, onClickModalClose, modalData, onClickOverl
   return (
     <>
       <ModalContainer isActive={isActive} closeEvent={onClickModalClose} maxWidth="500px">
-        <OverlapContent>
-          <h4 className="title">이벤트 선택하기</h4>
-          <div>
-            {modalData.map((v: any, i: number) => (
-              <div key={i} className="list">
-                <button className="list_content" onClick={() => onClickOverlapList(v)}>
-                  <span className="img_box">
-                    <img src={v.images[0].url} alt="" />
-                  </span>
-                  <p>{v.diaryTitle}</p>
-                  <span className="icon">
-                    <FontAwesomeIcon icon={faChevronRight} />
-                  </span>
-                </button>
-              </div>
-            ))}
-          </div>
-          <Button onClick={onClickModalClose} width="100%">
-            닫기
-          </Button>
-        </OverlapContent>
+        <Card title="이벤트 선택">
+          <OverlapContent>
+            <div>
+              {modalData.map((v: any, i: number) => (
+                <div key={i} className="list">
+                  <button className="list_content" onClick={() => onClickOverlapList(v)}>
+                    <span className="img_box">
+                      <img src={v.images[0].url} alt="" />
+                    </span>
+                    <p>{v.diaryTitle}</p>
+                    <span className="icon">
+                      <FontAwesomeIcon icon={faChevronRight} />
+                    </span>
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="btn_box">
+              <Button onClick={onClickModalClose} width="100%">
+                닫기
+              </Button>
+            </div>
+          </OverlapContent>
+        </Card>
       </ModalContainer>
     </>
   )

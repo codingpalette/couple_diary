@@ -2,13 +2,7 @@ import styled from 'styled-components'
 import { colors } from '../../../assets/css/GlobalStyles'
 
 export const OverlapContent = styled.div`
-  padding: 1rem;
   box-sizing: border-box;
-
-  .title {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
 
   .list {
     position: relative;
@@ -42,5 +36,9 @@ export const OverlapContent = styled.div`
         width: 12px;
       }
     }
+  }
+
+  .btn_box {
+    margin-top: 1.5rem;
   }
 `
