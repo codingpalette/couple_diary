@@ -26,6 +26,7 @@ import diaryState from '../../stores/useDiaryState'
 import { checkSpecial } from '../../hooks/useStringCheck'
 import useSWR from 'swr'
 import fetcher from '../../hooks/fetcher'
+import OverlapListModal from '../../components/diary/OverlapListModal'
 
 const WritePage = () => {
   const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
@@ -58,6 +59,10 @@ const WritePage = () => {
   const [backLoadingActive, setBackLoadingActive] = useState(false)
   // save form 모달 상태값
   const [saveFromModalActive, setSaveFormModalActive] = useState(false)
+  // 오버랩 모달 내용 값
+  const [overlapData, setOverLapData] = useState<any>([])
+  // 오버랩 모달 상태값
+  const [overlapListModalActive, setOverlapListModalActive] = useState(false)
   // 슬라이드 모달 닫기 함수
   const onClickSlideModalClose = () => {
     setSlideModalActive(false)
@@ -191,9 +196,23 @@ const WritePage = () => {
     setSaveFormModalActive(true)
     // saveModalActiveToggle()
   }
-
+  // 저장 확인 모달 닫기 이벤트
   const onClickSaveModalClose = () => {
     setSaveFormModalActive(false)
+  }
+  // 오버랩 모달 오픈 이벤트
+  const onClickOverlapListModalOpen = () => {
+    setOverlapListModalActive(true)
+  }
+  // 오버랩 모달 닫기 이벤트
+  const onClickOverlapListModalClose = () => {
+    setOverlapListModalActive(false)
+  }
+  // 오버랩 모달 리스트 클릭 이벤트
+  const onClickOverlapList = (v: any) => {
+    setOverlapListModalActive(false)
+    setModalData(v)
+    setSlideModalActive(true)
   }
 
   // 다이어리 저장
@@ -211,13 +230,14 @@ const WritePage = () => {
   // 마커 클릭 했을 떄 이벤트
   const onClickMarker = (v: any) => {
     const mapList = useDiary.mapList.filter(f => f.position.lng === v.lng && f.position.lat === v.lat)
+    console.log(mapList)
     if (mapList.length > 1) {
-      alert('2개 이상의 같은 지역')
+      setOverLapData(mapList)
+      setOverlapListModalActive(true)
     } else {
-      alert('1개만 있음')
+      setModalData(mapList[0])
+      setSlideModalActive(true)
     }
-    // setModalData(v)
-    // setSlideModalActive(true)
   }
 
   // 다이어리 임시저장
@@ -359,6 +379,13 @@ const WritePage = () => {
       </ModalContainer>
 
       <SlideModal isActive={slideModalActive} onClickModalClose={onClickSlideModalClose} modalData={modalData} />
+
+      <OverlapListModal
+        isActive={overlapListModalActive}
+        onClickModalClose={onClickOverlapListModalClose}
+        modalData={overlapData}
+        onClickOverlapList={onClickOverlapList}
+      />
 
       <NavBar createModalOpen={onClickCreateModalOpen} onClickSaveModalOpen={onClickSaveModalOpen} />
 
