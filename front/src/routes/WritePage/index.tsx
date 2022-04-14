@@ -14,7 +14,6 @@ import Textarea from '../../components/common/Textarea'
 import ModalContainer from '../../containers/ModalContainer'
 import DatePicker from 'react-datepicker'
 import { ko } from 'date-fns/esm/locale'
-import DaumPostcode from 'react-daum-postcode'
 import 'react-datepicker/dist/react-datepicker.css'
 import { Map, MapMarker } from 'react-kakao-maps-sdk'
 import SlideModal from '../../components/diary/SlideModal'
@@ -28,6 +27,7 @@ import useSWR from 'swr'
 import fetcher from '../../hooks/fetcher'
 import OverlapListModal from '../../components/diary/OverlapListModal'
 import dayjs from 'dayjs'
+import PostCodeProps from '../../components/common/PostCode'
 
 const WritePage = () => {
   const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
@@ -85,6 +85,10 @@ const WritePage = () => {
   // 주소검색 버튼 클릭시 카카오 주소검색 오픈 함수
   const onClickSearch = () => {
     setAddressSearchOpen(true)
+  }
+  // 주소검색 닫기 이벤트
+  const addressSearchClose = () => {
+    setAddressSearchOpen(false)
   }
   // 주소 검색 완료후 이벤트
   const onCompletePost = (data: any) => {
@@ -329,7 +333,11 @@ const WritePage = () => {
             </div>
           </CardInputGroup>
           <CardInputGroup>
-            {addressSearchOpen && <DaumPostcode autoClose={true} onComplete={onCompletePost} />}
+            <PostCodeProps
+              addressSearchOpen={addressSearchOpen}
+              onCompletePost={onCompletePost}
+              addressSearchClose={addressSearchClose}
+            />
           </CardInputGroup>
           <CardInputGroup>
             <div className="title">카드 제목</div>
