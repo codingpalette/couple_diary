@@ -27,6 +27,7 @@ const OverlapListModal = ({ isActive, onClickModalClose, modalData, onClickOverl
               {modalData.map((v: any, i: number) => (
                 <div key={i} className="list">
                   <button className="list_content" onClick={() => onClickOverlapList(v)}>
+                    <span className="date">{v.date}</span>
                     <span className="img_box">
                       <img src={v.images[0].url} alt="" />
                     </span>

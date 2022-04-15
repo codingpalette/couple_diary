@@ -14,6 +14,13 @@ export const OverlapContent = styled.div`
       cursor: pointer;
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
+      .date {
+        width: 100%;
+        font-size: 0.75rem;
+        text-align: right;
+        color: ${colors.Gray_400};
+      }
       .img_box {
         display: block;
         width: 45px;
