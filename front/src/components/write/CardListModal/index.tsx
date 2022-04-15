@@ -2,8 +2,6 @@ import React from 'react'
 import ModalContainer from '../../../containers/ModalContainer'
 import Card from '../../common/Card'
 import { ListContent } from './styles'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import Button from '../../common/Button'
 
 export type CardListModalProps = {
@@ -13,11 +11,19 @@ export type CardListModalProps = {
   onClickModalClose: (e?: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => void
   /** 모달 데이타 **/
   modalData: any
-  /** 리스트 수정 클릭 이벤트 **/
+  /** 카드 리스트 수정 클릭 이벤트 **/
   onClickCardListModify: (e?: React.MouseEvent<HTMLButtonElement>, i?: number | undefined) => void
+  /** 카드 리스트 삭제 클릭 이벤트 **/
+  onClickCardDeleteModalOpen: (i?: number | undefined) => void
 }
 
-const CardListModal = ({ isActive, onClickModalClose, modalData, onClickCardListModify }: CardListModalProps) => {
+const CardListModal = ({
+  isActive,
+  onClickModalClose,
+  modalData,
+  onClickCardListModify,
+  onClickCardDeleteModalOpen,
+}: CardListModalProps) => {
   return (
     <>
       <ModalContainer isActive={isActive} closeEvent={onClickModalClose} maxWidth="500px">
@@ -34,7 +40,9 @@ const CardListModal = ({ isActive, onClickModalClose, modalData, onClickCardList
                     <p>{v.diaryTitle}</p>
                     <div className="btn_box">
                       <Button onClick={() => onClickCardListModify(v, i)}>수정</Button>
-                      <Button theme="secondary">삭제</Button>
+                      <Button theme="secondary" onClick={() => onClickCardDeleteModalOpen(i)}>
+                        삭제
+                      </Button>
                     </div>
                   </div>
                 </div>

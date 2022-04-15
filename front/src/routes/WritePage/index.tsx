@@ -71,6 +71,10 @@ const WritePage = () => {
   const [selectList, setSelectList] = useState<number | null>(null)
   // 카드 리스트 모달 상태값
   const [cardListModalActive, setCardListModalActive] = useState(false)
+  // 카드 삭제 모달 온, 오프 상태값
+  const [cardDeleteModalActive, setCardDeleteModalActive] = useState(false)
+  // 삭제될 카드 인덱스값
+  const [selectDeleteCard, setSelectDeleteCard] = useState<number | null>(null)
   // 슬라이드 모달 닫기 함수
   const onClickSlideModalClose = () => {
     setSlideModalActive(false)
@@ -252,15 +256,15 @@ const WritePage = () => {
     setModalData(v)
     setSlideModalActive(true)
   }
-  // 리스트 모달 오픈 함수
+  // 카드 리스트 모달 오픈 함수
   const onClickCardListModalOpen = () => {
     setCardListModalActive(true)
   }
-  // 리스트 모달 오프 함수
+  // 카드 리스트 모달 오프 함수
   const onClickCardListModalClose = () => {
     setCardListModalActive(false)
   }
-  // 리스트 모달 수정 버튼 클릭 이벤트
+  // 카드 리스트 모달 수정 버튼 클릭 이벤트
   const onClickCardListModify = (v: any, i: any) => {
     setMarkerMode('modify')
     setStartDate(new Date(v.date))
@@ -273,6 +277,24 @@ const WritePage = () => {
 
     setCardListModalActive(false)
     setCreateModalActive(true)
+  }
+  // 카드 리스트 삭제 모달 오픈 함수
+  const onClickCardDeleteModalOpen = (i: any) => {
+    setSelectDeleteCard(i)
+    setCardDeleteModalActive(true)
+  }
+  // 카드 리스트 삭제 모달 오프 함수
+  const onClickCardDeleteModalClose = () => {
+    setSelectDeleteCard(null)
+    setCardDeleteModalActive(false)
+  }
+  // 카드 삭제 이벤트
+  const onClickCardDelete = () => {
+    setUseDiary({
+      ...useDiary,
+      mapList: useDiary.mapList.filter((v, i) => i !== selectDeleteCard),
+    })
+    onClickCardDeleteModalClose()
   }
 
   // 다이어리 저장
@@ -456,7 +478,25 @@ const WritePage = () => {
         onClickModalClose={onClickCardListModalClose}
         modalData={useDiary}
         onClickCardListModify={onClickCardListModify}
+        onClickCardDeleteModalOpen={onClickCardDeleteModalOpen}
       />
+
+      <ModalContainer isActive={cardDeleteModalActive} closeEvent={onClickCardDeleteModalClose} maxWidth="500px">
+        <Card title="카드 삭제">
+          <SelectContainerBox>
+            <p>카드를 삭제 하시겠습니까?</p>
+            <span className="line" />
+            <div className="button_box">
+              <Button theme="tertiary" onClick={onClickCardDeleteModalClose}>
+                취소
+              </Button>
+              <Button theme="secondary" onClick={onClickCardDelete}>
+                삭제
+              </Button>
+            </div>
+          </SelectContainerBox>
+        </Card>
+      </ModalContainer>
 
       <NavBar
         createModalOpen={onClickCreateModalOpen}
