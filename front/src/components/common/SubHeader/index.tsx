@@ -3,12 +3,8 @@ import { BackLink, HeaderBox, HeaderTag, MenuTitle } from './styles'
 import { useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
-import useSWR from 'swr'
-import fetcher from '../../../hooks/fetcher'
 
 const SubHeader = () => {
-  const { data: userData, error, mutate } = useSWR('/api/user/check', fetcher)
-
   const location = useLocation()
   const [title, setTitle] = useState('')
   const [link, setLink] = useState('/')
@@ -33,7 +29,7 @@ const SubHeader = () => {
         setLink('/menu')
         break
       case '/saves':
-        setTitle('저장 목록')
+        setTitle('저장 리스트')
         setLink('/menu')
         break
       default:
@@ -41,10 +37,6 @@ const SubHeader = () => {
         setLink('/')
     }
   }, [])
-
-  if (!userData) {
-    return null
-  }
 
   return (
     <>

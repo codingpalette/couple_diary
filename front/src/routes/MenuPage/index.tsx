@@ -41,7 +41,7 @@ const MenuPage = () => {
         <MenuList href="/" icon="📚">
           다이어리 리스트
         </MenuList>
-        <MenuList href="/" icon="💾">
+        <MenuList href="/saves" icon="💾">
           저장 리스트
         </MenuList>
         <MenuList href="/" icon="👋" onClick={onClickLogOut}>
