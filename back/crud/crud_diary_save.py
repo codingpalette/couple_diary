@@ -13,6 +13,7 @@ class CRUDDiarySave():
         db_obj = DiarySave(
             user_id=req.user_id,
             location=req.location,
+            title=req.title,
             description=req.description,
             content=req.mapList,
         )
@@ -26,7 +27,7 @@ class CRUDDiarySave():
             .filter(DiarySave.user_id == user_id) \
             .order_by(DiarySave.id.desc())\
             .offset(skip).limit(limit)\
-            .options(load_only("id", "user_id", "description"))\
+            .options(load_only("id", "user_id", "title", "description"))\
             .all()
 
 

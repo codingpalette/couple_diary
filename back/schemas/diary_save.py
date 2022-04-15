@@ -28,6 +28,7 @@ class MapList(BaseModel):
 class DiarySaveCreate(DiarySaveBase):
     user_id: Optional[int]
     location: Optional[str]
+    title: Optional[str]
     description: Optional[str]
     mapList: Optional[List[MapList]]
 

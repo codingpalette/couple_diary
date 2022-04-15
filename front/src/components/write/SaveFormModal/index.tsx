@@ -50,6 +50,10 @@ const SaveFormModal = ({ isActive, closeEvent, temporarySave }: SaveFormModalPro
     setUseDiary({ ...useDiary, location: e.target.value })
   }
 
+  const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUseDiary({ ...useDiary, title: e.target.value })
+  }
+
   const onChangeDescription = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setUseDiary({ ...useDiary, description: e.target.value })
   }
@@ -71,6 +75,15 @@ const SaveFormModal = ({ isActive, closeEvent, temporarySave }: SaveFormModalPro
               onChange={onChangeLocation}
               maxLength={25}
               placeholder="다이어리 주소를 입력해 주세요."
+            />
+          </div>
+          <div className="input_group">
+            <h4>다이어리 제목</h4>
+            <Input
+              value={useDiary.title}
+              onChange={onChangeTitle}
+              maxLength={20}
+              placeholder="다이어리 제목을 입력해 주세요."
             />
           </div>
           <div className="input_group">

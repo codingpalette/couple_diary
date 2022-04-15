@@ -34,9 +34,7 @@ const WritePage = () => {
   const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
   // 다이어리 값
   const [useDiary, setUseDiary] = useRecoilState(diaryState)
-  useEffect(() => {
-    console.log(useDiary)
-  }, [useDiary])
+
   // 달력 상태값
   const [startDate, setStartDate] = useState<Date | null>(new Date())
   // 모달창 주소검색 인풋 상태값
@@ -326,9 +324,10 @@ const WritePage = () => {
   const temporarySave = async () => {
     // console.log('11111')
     // console.log(useDiary.location)
-    // if (useDiary.location.trim().length === 0) {
-    //   ErrorMessageOpen('다이어리 주소를 입력해 주세요.')
-    // }
+    if (useDiary.title.trim().length === 0) {
+      ErrorMessageOpen('다이어리 제목을 입력해 주세요.')
+      return
+    }
     // if (checkSpecial(useDiary.location)) {
     //   ErrorMessageOpen('특수문자는 사용이 불가능 합니다.')
     // }
@@ -337,6 +336,7 @@ const WritePage = () => {
       const res = await axios.post('/api/diary_save', {
         user_id: userData.data.id,
         location: useDiary.location,
+        title: useDiary.title,
         description: useDiary.description,
         mapList: useDiary.mapList,
       })
