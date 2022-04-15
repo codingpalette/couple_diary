@@ -28,7 +28,21 @@ const diaryState = atom<diaryStateTypes>({
   default: {
     location: '',
     description: '',
-    mapList: [],
+    mapList: [
+      {
+        contentText: 'asdasd',
+        date: '2022-04-14',
+        diaryTitle: 'sdf',
+        fullAddr: '서울 종로구 돈화문로5길 28-3 (낙원동)',
+        images: [
+          {
+            id: 'e6fb2e60-fa0a-4b4b-b380-f8c9dcbffb00',
+            url: 'https://imagedelivery.net/V2CXLGEb_82hSjTiy12QJw/e6fb2e60-fa0a-4b4b-b380-f8c9dcbffb00/public',
+          },
+        ],
+        position: { lat: 37.5708764408522, lng: 126.990430237695 },
+      },
+    ],
   },
 })
 

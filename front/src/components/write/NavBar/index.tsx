@@ -9,9 +9,11 @@ export type NavBarProps = {
   createModalOpen?: (e?: React.MouseEvent<HTMLButtonElement>) => void
   /** 클릭했을 때 호출할 함수 (다이어리 저장 모달 오픈) */
   onClickSaveModalOpen?: (e?: React.MouseEvent<HTMLButtonElement>) => void
+  /** 클릭했을 때 리스트 모달 호출 함수 **/
+  onClickListModalOpen?: (e?: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-const NavBar = ({ createModalOpen, onClickSaveModalOpen }: NavBarProps) => {
+const NavBar = ({ createModalOpen, onClickSaveModalOpen, onClickListModalOpen }: NavBarProps) => {
   const navigate = useNavigate()
 
   return (
@@ -23,7 +25,7 @@ const NavBar = ({ createModalOpen, onClickSaveModalOpen }: NavBarProps) => {
         <NabBtn onClick={onClickSaveModalOpen}>
           <FontAwesomeIcon icon={faSave} size="lg" />
         </NabBtn>
-        <NabBtn onClick={createModalOpen}>
+        <NabBtn onClick={onClickListModalOpen}>
           <FontAwesomeIcon icon={faList} size="lg" />
         </NabBtn>
         <NabBtn onClick={() => navigate('/menu')}>

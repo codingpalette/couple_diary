@@ -28,6 +28,7 @@ import fetcher from '../../hooks/fetcher'
 import OverlapListModal from '../../components/diary/OverlapListModal'
 import dayjs from 'dayjs'
 import PostCodeProps from '../../components/common/PostCode'
+import CardListModal from '../../components/write/CardListModal'
 
 const WritePage = () => {
   const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
@@ -47,11 +48,13 @@ const WritePage = () => {
     coords: {},
   })
   // 다이어리 제목 상태값
-  const [diaryTitle, onChangeDiaryTitle, onResetDiaryTitle] = useInput('')
+  const [diaryTitle, onChangeDiaryTitle, onResetDiaryTitle, onSetDiaryTitle] = useInput('')
   // 이미지 리스트 값
   const [images, setImages] = useState<any>([])
   // 내용 상태 값
-  const [contentText, onChangeContentText, onResetContentText] = useInput('')
+  const [contentText, onChangeContentText, onResetContentText, onSetContentText] = useInput('')
+  // 마커 생성을 위함 폼 신규생성인지 수정인지에 대한 상태값
+  const [markerMode, setMarkerMode] = useState('create')
   // 마커 생성을 위한 폼 모달 온,오프 상태값
   const [createModalActive, setCreateModalActive] = useState(false)
   // 마커 클릭시 나오는 슬라이드 모달 온,오프 상태값
@@ -64,17 +67,24 @@ const WritePage = () => {
   const [overlapData, setOverLapData] = useState<any>([])
   // 오버랩 모달 상태값
   const [overlapListModalActive, setOverlapListModalActive] = useState(false)
+  // 선택된 리스트 인덱스값
+  const [selectList, setSelectList] = useState<number | null>(null)
+  // 카드 리스트 모달 상태값
+  const [cardListModalActive, setCardListModalActive] = useState(false)
   // 슬라이드 모달 닫기 함수
   const onClickSlideModalClose = () => {
     setSlideModalActive(false)
   }
   // 마커 생성 폼 모달 오픈 함수
   const onClickCreateModalOpen = () => {
+    setMarkerMode('create')
+    setStartDate(new Date())
     onResetDiaryTitle()
     onResetContentText()
     onResetMapInputAddress()
     setMapObjData({ coords: {} })
     setImages([])
+    setSelectList(null)
     setCreateModalActive(true)
   }
   // 마커 생성 폼 모달 닫기 함수
@@ -157,38 +167,60 @@ const WritePage = () => {
     setImages(images.filter((v: any) => v.id !== removeImageId))
     imageRemoveModalActiveToggle()
   }
-  // 마커 생성 이벤트
+  // 마커 생성, 수정 이벤트
   const onClickMapSave = () => {
-    if (mapObjData.fullAddr === '') {
-      ErrorMessageOpen('주소를 입력해 주세요.')
-      return
-    }
-    if (diaryTitle.trim().length === 0) {
-      ErrorMessageOpen('타이틀을 입력해 주세요.')
-      return
-    }
-    if (images.length === 0) {
-      ErrorMessageOpen('한 장 이상의 이미지를 등록해 주세요.')
-      return
-    }
-    if (contentText.trim().length === 0) {
-      ErrorMessageOpen('내용을 입력해 주세요.')
-      return
-    }
+    if (markerMode === 'create') {
+      if (mapObjData.fullAddr === '') {
+        ErrorMessageOpen('주소를 입력해 주세요.')
+        return
+      }
+      if (diaryTitle.trim().length === 0) {
+        ErrorMessageOpen('타이틀을 입력해 주세요.')
+        return
+      }
+      if (images.length === 0) {
+        ErrorMessageOpen('한 장 이상의 이미지를 등록해 주세요.')
+        return
+      }
+      if (contentText.trim().length === 0) {
+        ErrorMessageOpen('내용을 입력해 주세요.')
+        return
+      }
 
-    const data = {
-      diaryTitle,
-      date: dayjs(startDate).format('YYYY-MM-DD'),
-      images,
-      contentText,
-      fullAddr: mapInputAddress,
-      position: { lng: mapObjData.coords.La, lat: mapObjData.coords.Ma },
+      const data = {
+        diaryTitle,
+        date: dayjs(startDate).format('YYYY-MM-DD'),
+        images,
+        contentText,
+        fullAddr: mapInputAddress,
+        position: { lng: mapObjData.coords.La, lat: mapObjData.coords.Ma },
+      }
+      console.log('data', data)
+      // setMapList([...mapList, { content: '', position: { lng: 126.987024769656, lat: 37.5705611277251 } }])
+      // setMapList([...mapList, data])
+      setUseDiary({ ...useDiary, mapList: [...useDiary.mapList, data] })
+      // setAddressSearchOpen(false)
+    } else {
+      console.log(selectList)
+      const data = {
+        diaryTitle,
+        date: dayjs(startDate).format('YYYY-MM-DD'),
+        images,
+        contentText,
+        fullAddr: mapInputAddress,
+        position: { lng: mapObjData.coords.La, lat: mapObjData.coords.Ma },
+      }
+      setUseDiary({
+        ...useDiary,
+        mapList: useDiary.mapList.map((v, i) => {
+          if (i === selectList) {
+            return { ...data }
+          } else {
+            return { ...v }
+          }
+        }),
+      })
     }
-    console.log('data', data)
-    // setMapList([...mapList, { content: '', position: { lng: 126.987024769656, lat: 37.5705611277251 } }])
-    // setMapList([...mapList, data])
-    setUseDiary({ ...useDiary, mapList: [...useDiary.mapList, data] })
-    // setAddressSearchOpen(false)
     onClickCreateModalClose()
   }
 
@@ -219,6 +251,28 @@ const WritePage = () => {
     setOverlapListModalActive(false)
     setModalData(v)
     setSlideModalActive(true)
+  }
+  // 리스트 모달 오픈 함수
+  const onClickCardListModalOpen = () => {
+    setCardListModalActive(true)
+  }
+  // 리스트 모달 오프 함수
+  const onClickCardListModalClose = () => {
+    setCardListModalActive(false)
+  }
+  // 리스트 모달 수정 버튼 클릭 이벤트
+  const onClickCardListModify = (v: any, i: any) => {
+    setMarkerMode('modify')
+    setStartDate(new Date(v.date))
+    onSetDiaryTitle(v.diaryTitle)
+    onSetContentText(v.contentText)
+    onSetMapInputAddress(v.fullAddr)
+    setMapObjData({ coords: { La: v.position.lng, Ma: v.position.lat } })
+    setImages(v.images)
+    setSelectList(i)
+
+    setCardListModalActive(false)
+    setCreateModalActive(true)
   }
 
   // 다이어리 저장
@@ -397,7 +451,18 @@ const WritePage = () => {
         onClickOverlapList={onClickOverlapList}
       />
 
-      <NavBar createModalOpen={onClickCreateModalOpen} onClickSaveModalOpen={onClickSaveModalOpen} />
+      <CardListModal
+        isActive={cardListModalActive}
+        onClickModalClose={onClickCardListModalClose}
+        modalData={useDiary}
+        onClickCardListModify={onClickCardListModify}
+      />
+
+      <NavBar
+        createModalOpen={onClickCreateModalOpen}
+        onClickSaveModalOpen={onClickSaveModalOpen}
+        onClickListModalOpen={onClickCardListModalOpen}
+      />
 
       <BackLoading isActive={backLoadingActive} />
 
