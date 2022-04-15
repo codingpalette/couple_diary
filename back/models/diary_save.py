@@ -10,6 +10,7 @@ class DiarySave(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     location = Column(String(30), nullable=False)
+    description = Column(String(100))
     content = Column(Text)
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     created_at = Column(DateTime(6), default=func.utc_timestamp(), nullable=False)

@@ -326,15 +326,15 @@ const WritePage = () => {
   const temporarySave = async () => {
     // console.log('11111')
     // console.log(useDiary.location)
-    if (useDiary.location.trim().length === 0) {
-      ErrorMessageOpen('다이어리 주소를 입력해 주세요.')
-    }
-    if (checkSpecial(useDiary.location)) {
-      ErrorMessageOpen('특수문자는 사용이 불가능 합니다.')
-    }
+    // if (useDiary.location.trim().length === 0) {
+    //   ErrorMessageOpen('다이어리 주소를 입력해 주세요.')
+    // }
+    // if (checkSpecial(useDiary.location)) {
+    //   ErrorMessageOpen('특수문자는 사용이 불가능 합니다.')
+    // }
 
     try {
-      const res = await axios.post('/api/save', {
+      const res = await axios.post('/api/diary_save', {
         user_id: userData.data.id,
         location: useDiary.location,
         description: useDiary.description,
