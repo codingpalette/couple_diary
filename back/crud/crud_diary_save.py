@@ -22,11 +22,11 @@ class CRUDDiarySave():
         db.refresh(db_obj)
         return db_obj
 
-    def diary_list_get(self, db: Session, user_id: int, skip: int, limit: int):
+    def diary_list_get(self, db: Session, user_id: int, skip: int, limit: int) -> DiarySave:
         return db.query(DiarySave)\
             .filter(DiarySave.user_id == user_id) \
             .order_by(DiarySave.id.desc())\
-            .offset(skip).limit(limit)\
+            .offset(skip * limit).limit(limit)\
             .options(load_only("id", "user_id", "title", "description"))\
             .all()
 
