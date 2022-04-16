@@ -7,7 +7,7 @@ export const BackLoadingContainer = styled.div`
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.2);
-  z-index: 1100;
+  z-index: 1300;
 
   .content {
     display: flex;

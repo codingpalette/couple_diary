@@ -7,20 +7,11 @@ export type SelectContainerBoxProps = {
   okEvent: any
   okText: string
   okTextType: 'primary' | 'secondary' | 'tertiary'
-  loading?: boolean
   closeEvent: any
   closeText: string
 }
 
-const SelectContainerBox = ({
-  title,
-  okEvent,
-  okText,
-  okTextType,
-  loading,
-  closeEvent,
-  closeText,
-}: SelectContainerBoxProps) => {
+const SelectContainerBox = ({ title, okEvent, okText, okTextType, closeEvent, closeText }: SelectContainerBoxProps) => {
   return (
     <>
       <Content>
@@ -30,7 +21,7 @@ const SelectContainerBox = ({
           <Button theme="tertiary" onClick={closeEvent}>
             {closeText}
           </Button>
-          <Button theme={okTextType} onClick={okEvent} loading={loading}>
+          <Button theme={okTextType} onClick={okEvent}>
             {okText}
           </Button>
         </div>

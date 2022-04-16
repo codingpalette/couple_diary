@@ -374,7 +374,7 @@ const WritePage = () => {
       ErrorMessageOpen('다이어리 제목을 입력해 주세요.')
       return
     }
-
+    setBackLoadingActive(true)
     try {
       let res = null
       if (formMode === 'create') {
@@ -395,12 +395,14 @@ const WritePage = () => {
           mapList: useDiary.mapList,
         })
       }
+      setBackLoadingActive(false)
       if (res?.status === 200) {
         SuccessMessageOpen('저장에 성공 했습니다.')
         navigate(`/write?save_id=${res.data.id}`)
         onClickSaveModalClose()
       }
     } catch (e: any) {
+      setBackLoadingActive(false)
       ErrorMessageOpen('저장에 실패 했습니다.')
     }
   }
@@ -547,14 +549,14 @@ const WritePage = () => {
         onClickListModalOpen={onClickCardListModalOpen}
       />
 
-      <BackLoading isActive={backLoadingActive} />
-
       <SaveFormModal
         isActive={saveFromModalActive}
         closeEvent={onClickSaveModalClose}
         temporarySave={temporarySave}
         formMode={formMode}
       />
+
+      <BackLoading isActive={backLoadingActive} />
     </>
   )
 }
