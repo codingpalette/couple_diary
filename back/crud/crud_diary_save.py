@@ -1,6 +1,7 @@
 from typing import Any, Dict, Optional, Union
 from sqlalchemy.orm import Session, load_only
 from models.diary_save import DiarySave
+from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
 import schemas
 
@@ -34,6 +35,15 @@ class CRUDDiarySave():
         db.refresh(item)
         return item
 
+    def diary_save_delete(self, db: Session, id: int) -> DiarySave:
+        item = self.get_id(db, id)
+        if item is None:
+            raise HTTPException(status_code=402,  detail={"result": "fail", "message": "삭제할 다이어리가 존재하지 않습니다."})
+        else:
+            db.delete(item)
+            db.commit()
+            return item
+
     def diary_list_get(self, db: Session, user_id: int, skip: int, limit: int) -> DiarySave:
         return db.query(DiarySave)\
             .filter(DiarySave.user_id == user_id) \
@@ -41,6 +51,8 @@ class CRUDDiarySave():
             .offset(skip * limit).limit(limit)\
             .options(load_only("id", "user_id", "title", "description"))\
             .all()
+
+
 
 
 

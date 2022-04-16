@@ -11,6 +11,8 @@ import ModalContainer from '../../containers/ModalContainer'
 import Card from '../../components/common/Card'
 import SelectContainerBox from '../../components/common/SelectContainerBox'
 import BackLoading from '../../components/common/BackLoading'
+import { ErrorMessageOpen, SuccessMessageOpen } from '../../hooks/useToast'
+import axios from 'axios'
 
 const PAGE_SIZE = 30
 const SavesPage = () => {
@@ -46,20 +48,33 @@ const SavesPage = () => {
 
   // 백그라운드 로딩 상태값
   const [backLoadingActive, setBackLoadingActive] = useState(false)
+  // 선택된 다이어리 아이디
+  const [selectDiary, setSelectDiary] = useState<number | null>(null)
   // 다이어리 삭제 모달 온, 오프 상태값
   const [diaryDeleteModalActive, setDiaryDeleteModalActive] = useState(false)
   // 다이어리 삭제 모달 오픈 함수
-  const onClickDiaryDeleteModalOpen = (i: any) => {
+  const onClickDiaryDeleteModalOpen = (id: any) => {
+    setSelectDiary(id)
     setDiaryDeleteModalActive(true)
   }
   // 다이어리 삭제 모달 오프 함수
   const onClickDiaryDeleteModalClose = () => {
+    setSelectDiary(null)
     setDiaryDeleteModalActive(false)
   }
   // 다이어리 삭제 이벤트
-  const onClickDiaryDelete = () => {
+  const onClickDiaryDelete = async () => {
     setBackLoadingActive(true)
-    console.log('1111')
+    try {
+      await axios.delete(`/api/diary_save?id=${selectDiary}`)
+      setBackLoadingActive(false)
+      SuccessMessageOpen('삭제에 성공 했습니다.')
+      onClickDiaryDeleteModalClose()
+      await mutate()
+    } catch (e) {
+      setBackLoadingActive(false)
+      ErrorMessageOpen('삭제에 실패 했습니다.')
+    }
   }
 
   useEffect(() => {

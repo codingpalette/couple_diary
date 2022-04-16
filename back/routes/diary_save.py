@@ -24,6 +24,10 @@ def diary_save_create(req: schemas.DiarySaveCreate, db: Session = Depends(get_db
 def diary_save_modify(req: schemas.DiarySaveModify, db: Session = Depends(get_db)):
     return crud.diary_save.diary_save_modify(db, req)
 
+@router.delete('')
+def diary_save_delete(id: int, db: Session = Depends(get_db)):
+    return crud.diary_save.diary_save_delete(db, id)
+
 @router.get('/list')
 def diary_save_list_get(user_id: int, skip: int, limit: int, db: Session = Depends(get_db)):
     return crud.diary_save.diary_list_get(db, user_id, skip, limit)
