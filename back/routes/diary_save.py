@@ -13,14 +13,16 @@ router = APIRouter(
 )
 
 @router.get('')
-def diary_get(db: Session = Depends(get_db)):
-    return crud.diary_save.get_id(db)
+def diary_get(save_id: int, db: Session = Depends(get_db)):
+    return crud.diary_save.get_id(db, save_id)
 
-@router.post('')
+@router.post('', response_model=schemas.DiarySaveModify)
 def diary_save_create(req: schemas.DiarySaveCreate, db: Session = Depends(get_db)):
-    print(req)
-    crud.diary_save.diary_save_create(db, req)
-    return True
+    return crud.diary_save.diary_save_create(db, req)
+
+@router.put('', response_model=schemas.DiarySaveModify)
+def diary_save_modify(req: schemas.DiarySaveModify, db: Session = Depends(get_db)):
+    return crud.diary_save.diary_save_modify(db, req)
 
 @router.get('/list')
 def diary_save_list_get(user_id: int, skip: int, limit: int, db: Session = Depends(get_db)):

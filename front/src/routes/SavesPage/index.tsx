@@ -54,7 +54,7 @@ const SavesPage = () => {
           {posts &&
             posts.map((v: any) => (
               <div className="list" key={v.id}>
-                <Link to={`/write?id=${v.id}`}>
+                <Link to={`/write?save_id=${v.id}`}>
                   <p>{v.title}</p>
                   <span className="icon">
                     <FontAwesomeIcon icon={faChevronRight} />

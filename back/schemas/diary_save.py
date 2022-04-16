@@ -8,13 +8,15 @@ class DiarySaveBase(BaseModel):
     class Config:
         orm_mode = True
 
+
+
 class Images(BaseModel):
     id: str
     url: str
 
 class Position(BaseModel):
-    lat: int
-    lng: int
+    lat: float
+    lng: float
 
 class MapList(BaseModel):
     contentText: str
@@ -31,4 +33,7 @@ class DiarySaveCreate(DiarySaveBase):
     title: Optional[str]
     description: Optional[str]
     mapList: Optional[List[MapList]]
+
+class DiarySaveModify(DiarySaveCreate):
+    id: Optional[int]
 

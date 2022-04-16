@@ -17,7 +17,7 @@ import { ko } from 'date-fns/esm/locale'
 import 'react-datepicker/dist/react-datepicker.css'
 import { Map, MapMarker } from 'react-kakao-maps-sdk'
 import SlideModal from '../../components/diary/SlideModal'
-import { ErrorMessageOpen } from '../../hooks/useToast'
+import { ErrorMessageOpen, SuccessMessageOpen } from '../../hooks/useToast'
 import BackLoading from '../../components/common/BackLoading'
 import SaveFormModal from '../../components/write/SaveFormModal'
 import { useRecoilState } from 'recoil'
@@ -29,11 +29,58 @@ import OverlapListModal from '../../components/diary/OverlapListModal'
 import dayjs from 'dayjs'
 import PostCodeProps from '../../components/common/PostCode'
 import CardListModal from '../../components/write/CardListModal'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 const WritePage = () => {
   const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   // 다이어리 값
   const [useDiary, setUseDiary] = useRecoilState(diaryState)
+  // 시작하고 바로 다이어리값을 초기화를 해준다.
+  useEffect(() => {
+    const data = {
+      title: '',
+      location: '',
+      description: '',
+      mapList: [],
+    }
+    setUseDiary(data)
+  }, [])
+
+  const [formMode, setFormMode] = useState<'create' | 'diary_save' | 'diary'>('create')
+
+  // 임시저장 데이터 가져오기
+  const { data: diarySaveData, error: diarySaveError } = useSWR(
+    searchParams.get('save_id') ? `/api/diary_save?save_id=${searchParams.get('save_id')}` : null,
+    fetcher,
+  )
+
+  useEffect(() => {
+    if (diarySaveError) {
+      navigate('/menu')
+    }
+  }, [diarySaveError])
+
+  useEffect(() => {
+    if (diarySaveData === null) {
+      ErrorMessageOpen('저장된 다이어리가 없습니다.')
+      navigate('/menu')
+    } else if (diarySaveData) {
+      if (diarySaveData.user_id === userData.data.id) {
+        const data = {
+          title: diarySaveData.title,
+          location: diarySaveData.location,
+          description: diarySaveData.description,
+          mapList: diarySaveData.content,
+        }
+        setUseDiary(data)
+        setFormMode('diary_save')
+      } else {
+        navigate('/menu')
+      }
+    }
+  }, [diarySaveData, userData])
 
   // 달력 상태값
   const [startDate, setStartDate] = useState<Date | null>(new Date())
@@ -322,33 +369,38 @@ const WritePage = () => {
 
   // 다이어리 임시저장
   const temporarySave = async () => {
-    // console.log('11111')
-    // console.log(useDiary.location)
     if (useDiary.title.trim().length === 0) {
       ErrorMessageOpen('다이어리 제목을 입력해 주세요.')
       return
     }
-    // if (checkSpecial(useDiary.location)) {
-    //   ErrorMessageOpen('특수문자는 사용이 불가능 합니다.')
-    // }
 
     try {
-      const res = await axios.post('/api/diary_save', {
-        user_id: userData.data.id,
-        location: useDiary.location,
-        title: useDiary.title,
-        description: useDiary.description,
-        mapList: useDiary.mapList,
-      })
-      console.log(res)
+      let res = null
+      if (formMode === 'create') {
+        res = await axios.post('/api/diary_save', {
+          user_id: userData.data.id,
+          location: useDiary.location,
+          title: useDiary.title,
+          description: useDiary.description,
+          mapList: useDiary.mapList,
+        })
+      } else if (formMode === 'diary_save') {
+        res = await axios.put('/api/diary_save', {
+          id: diarySaveData.id,
+          user_id: userData.data.id,
+          location: useDiary.location,
+          title: useDiary.title,
+          description: useDiary.description,
+          mapList: useDiary.mapList,
+        })
+      }
+      if (res?.status === 200) {
+        SuccessMessageOpen('저장에 성공 했습니다.')
+        navigate(`/write?save_id=${res.data.id}`)
+        onClickSaveModalClose()
+      }
     } catch (e: any) {
-      if (e.response.data) {
-        console.log(e.response.data)
-        ErrorMessageOpen(e.response.data.message)
-      }
-      if (e.response.data.detail) {
-        ErrorMessageOpen(e.response.data.detail.message)
-      }
+      ErrorMessageOpen('저장에 실패 했습니다.')
     }
   }
 
@@ -506,7 +558,12 @@ const WritePage = () => {
 
       <BackLoading isActive={backLoadingActive} />
 
-      <SaveFormModal isActive={saveFromModalActive} closeEvent={onClickSaveModalClose} temporarySave={temporarySave} />
+      <SaveFormModal
+        isActive={saveFromModalActive}
+        closeEvent={onClickSaveModalClose}
+        temporarySave={temporarySave}
+        formMode={formMode}
+      />
     </>
   )
 }
