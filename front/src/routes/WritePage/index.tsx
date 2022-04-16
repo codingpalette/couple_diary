@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { CardButtonGroup, CardInputGroup, ControllerBox, SelectContainerBox } from './styles'
+import { CardButtonGroup, CardInputGroup, ControllerBox } from './styles'
 import axios from 'axios'
 import useInput from '../../hooks/useInput'
 import useBoolean from '../../hooks/useBoolean'
@@ -30,6 +30,7 @@ import dayjs from 'dayjs'
 import PostCodeProps from '../../components/common/PostCode'
 import CardListModal from '../../components/write/CardListModal'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import SelectContainerBox from '../../components/common/SelectContainerBox'
 
 const WritePage = () => {
   const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
@@ -423,16 +424,14 @@ const WritePage = () => {
 
       <ModalContainer isActive={saveModalActive} closeEvent={saveModalActiveToggle} maxWidth="500px">
         <Card title="다이어리 저장">
-          <SelectContainerBox>
-            <p>다이어리를 저장 하시겠습니까?</p>
-            <span className="line" />
-            <div className="button_box">
-              <Button theme="tertiary" onClick={saveModalActiveToggle}>
-                취소
-              </Button>
-              <Button onClick={onClickDiarySave}>저장</Button>
-            </div>
-          </SelectContainerBox>
+          <SelectContainerBox
+            title="다이어리를 저장 하시겠습니까?"
+            okEvent={onClickDiarySave}
+            okText="저장"
+            okTextType="primary"
+            closeEvent={saveModalActiveToggle}
+            closeText="취소"
+          />
         </Card>
       </ModalContainer>
 
@@ -501,18 +500,14 @@ const WritePage = () => {
 
       <ModalContainer isActive={imageRemoveModalActive} closeEvent={imageRemoveModalActiveToggle} maxWidth="500px">
         <Card title="이미지 삭제">
-          <SelectContainerBox>
-            <p>이미지를 삭제 하시겠습니까?</p>
-            <span className="line" />
-            <div className="button_box">
-              <Button theme="tertiary" onClick={imageRemoveModalActiveToggle}>
-                취소
-              </Button>
-              <Button theme="secondary" onClick={onClickImageRemoveEvent}>
-                삭제
-              </Button>
-            </div>
-          </SelectContainerBox>
+          <SelectContainerBox
+            title="이미지를 삭제 하시겠습니까?"
+            okEvent={onClickImageRemoveEvent}
+            okText="삭제"
+            okTextType="secondary"
+            closeEvent={imageRemoveModalActiveToggle}
+            closeText="취소"
+          />
         </Card>
       </ModalContainer>
 
@@ -535,18 +530,14 @@ const WritePage = () => {
 
       <ModalContainer isActive={cardDeleteModalActive} closeEvent={onClickCardDeleteModalClose} maxWidth="500px">
         <Card title="카드 삭제">
-          <SelectContainerBox>
-            <p>카드를 삭제 하시겠습니까?</p>
-            <span className="line" />
-            <div className="button_box">
-              <Button theme="tertiary" onClick={onClickCardDeleteModalClose}>
-                취소
-              </Button>
-              <Button theme="secondary" onClick={onClickCardDelete}>
-                삭제
-              </Button>
-            </div>
-          </SelectContainerBox>
+          <SelectContainerBox
+            title="카드를 삭제 하시겠습니까?"
+            okEvent={onClickCardDelete}
+            okText="삭제"
+            okTextType="secondary"
+            closeEvent={onClickCardDeleteModalClose}
+            closeText="취소"
+          />
         </Card>
       </ModalContainer>
 

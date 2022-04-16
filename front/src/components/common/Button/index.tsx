@@ -1,5 +1,7 @@
 import React from 'react'
 import { ButtonTag } from './styles'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
 export type ButtonProps = {
   /** 버튼 안의 내용 */
@@ -18,15 +20,16 @@ export type ButtonProps = {
   type?: 'button' | 'submit' | 'reset'
   // /** 클래스 네임 설정 */
   // className?: string
-  // // 로딩 설정
-  // loadingActive?: boolean
+  // 로딩 설정
+  loading?: boolean
 }
 
-const Button = ({ children, onClick, theme, width, type }: ButtonProps) => {
+const Button = ({ children, onClick, theme, width, type, loading }: ButtonProps) => {
   return (
     <>
-      <ButtonTag onClick={onClick} width={width} theme={theme} type={type}>
+      <ButtonTag onClick={onClick} width={width} theme={theme} type={type} loading={loading} disabled={loading}>
         {children}
+        {loading && <FontAwesomeIcon icon={faSpinner} spin />}
       </ButtonTag>
     </>
   )

@@ -12,17 +12,18 @@ export const ContentBox = styled.div`
     position: relative;
     padding-top: 22px;
     padding-bottom: 17px;
-    cursor: pointer;
 
-    a {
+    .item_box {
       width: 100%;
       display: flex;
       align-items: center;
       color: #000;
 
-      .icon {
+      .btn_box {
         margin-left: auto;
-        width: 12px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
       }
     }
   }

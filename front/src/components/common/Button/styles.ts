@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { colors } from '../../../assets/css/GlobalStyles'
 
-export const ButtonTag = styled.button<{ theme: string; width: string }>`
+export const ButtonTag = styled.button<{ theme: string; width: string; loading: boolean | undefined }>`
   width: ${props => props.width};
   height: 2rem;
   font-size: 0.875rem;
@@ -19,4 +19,10 @@ export const ButtonTag = styled.button<{ theme: string; width: string }>`
   &:hover {
     opacity: 0.8;
   }
+
+  svg {
+    margin-left: 5px;
+  }
+
+  pointer-events: ${props => (props.loading ? 'none' : 'auto')};
 `
