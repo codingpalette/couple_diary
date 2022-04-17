@@ -66,7 +66,7 @@ const SaveFormModal = ({ isActive, closeEvent, temporarySave, formMode, onClickD
             <h4>다이어리 주소</h4>
             <span>특수문자 제외</span>
             <span>
-              https://커다/{userData.data.nickname}/{useDiary.location}
+              https://nyamo.co.kr/{userData.data.nickname}/{useDiary.location}
             </span>
             <Input
               value={useDiary.location}

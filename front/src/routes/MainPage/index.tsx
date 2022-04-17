@@ -20,17 +20,17 @@ const MainPage = () => {
       <ContentBox>
         <Section1>
           <p>
-            사랑하는 사람에게 특별한 이벤트를 만들어 보세요.
+            특별한 사람에게 특별한 이벤트를 만들어 보세요.
             <br />
             소중한 사람과의 추억을 쉽고 편리하게 보여주는 모바일 서비스, <br />
-            커다와 함께라면 당신의 소중한 나날이 더욱 특별해질 거예요.
+            냐모와 함께라면 당신의 소중한 나날이 더욱 특별해질 거예요.
           </p>
         </Section1>
         <Section2>
           <div className="section2_content">
             <div className="title_box">
               <h1>
-                연인과 함께 했던, <br />
+                모두와 함께 했던, <br />
                 장소를 기억하고 <br />
                 보관하세요
               </h1>
