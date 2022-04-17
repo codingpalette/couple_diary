@@ -57,7 +57,7 @@ const DiaryListPage = () => {
                 <div className="item_box">
                   <p>{v.title}</p>
                   <div className="btn_box">
-                    <Link to={`/write?save_id=${v.id}`}>
+                    <Link to={`/@${v.nickname}/${v.location}`}>
                       <Button>보기</Button>
                     </Link>
                   </div>

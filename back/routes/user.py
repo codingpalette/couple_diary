@@ -5,8 +5,9 @@ from fastapi.responses import JSONResponse
 from starlette.requests import Request
 from sqlalchemy.orm import Session
 from database.connection import get_db
+from crud import crud_user
 import schemas
-import crud
+
 import bcrypt
 from functions import token
 from config import conf
@@ -36,18 +37,18 @@ def user_check(request: Request):
 # 유저 생성
 @router.post('')
 def user_create(req: schemas.UserCreate, db: Session = Depends(get_db)):
-    user_email_info = crud.user.get_user_by_email(db, req)
+    user_email_info = crud_user.get_user_by_email(db, req)
     # json_compatible_item_data = jsonable_encoder(user_info)
     # print(json_compatible_item_data)
     if user_email_info:
         return JSONResponse(status_code=401, content={"result": "fail", "message": "이미 존재하는 아이디 입니다"})
-    user_nickname_info = crud.user.get_user_by_nickname(db, req)
+    user_nickname_info = crud_user.get_user_by_nickname(db, req)
     if user_nickname_info:
         return JSONResponse(status_code=401, content={"result": "fail", "message": "이미 존재하는 닉네임 입니다"})
     hashed_password = bcrypt.hashpw(req.password.encode('utf-8'), bcrypt.gensalt())
     save_password = hashed_password.decode('utf-8')
     req.password = save_password
-    save_user = crud.user.user_create(db, req)
+    save_user = crud_user.user_create(db, req)
     if save_user:
         return JSONResponse(status_code=200, content={"result": "success", "message": "회원가입에 성공 했습니다"})
     else:
@@ -57,7 +58,7 @@ def user_create(req: schemas.UserCreate, db: Session = Depends(get_db)):
 
 @router.post('/login')
 def user_login(req: schemas.UserLogin, db: Session = Depends(get_db)):
-    user_email_info = crud.user.get_user_by_email(db, req)
+    user_email_info = crud_user.get_user_by_email(db, req)
     if not user_email_info:
         return JSONResponse(status_code=401, content={"result": "fail", "message": "존재하지 않는 아이디 입니다"})
     else:
@@ -67,7 +68,7 @@ def user_login(req: schemas.UserLogin, db: Session = Depends(get_db)):
         else:
             access_token = token.create_token('access_token', user_email_info)
             refresh_token = token.create_token('refresh_token', user_email_info)
-            token_update = crud.user.token_update(db, req, refresh_token)
+            token_update = crud_user.token_update(db, req, refresh_token)
             if token_update:
                 content = {"result": "success", "message": "로그인 성공"}
                 response = JSONResponse(content=content)
@@ -80,7 +81,7 @@ def user_login(req: schemas.UserLogin, db: Session = Depends(get_db)):
 @router.post('/logout')
 def user_logout(request: Request, db: Session = Depends(get_db)):
     cookies = request.cookies
-    crud.user.user_logout(db, cookies.get("refresh_token"))
+    crud_user.user_logout(db, cookies.get("refresh_token"))
     content = {"result": "success", "message": "로그아웃 성공"}
     response = JSONResponse(content=content)
     response.delete_cookie("access_token")
