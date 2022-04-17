@@ -1,14 +1,13 @@
 from sqlalchemy.orm import Session, load_only
 from models.diary import Diary
-from fastapi import HTTPException
-from fastapi.encoders import jsonable_encoder
-import schemas
+from models.user import User
+from schemas import diary
 
 
-def diary_location_get(db: Session, req: schemas.DiaryLocationGet) -> Diary:
+def diary_location_get(db: Session, req: diary.DiaryLocationGet) -> Diary:
     return db.query(Diary).filter(Diary.location == req.location, Diary.user_id == req.user_id).first()
 
-def diary_create(db: Session, req: schemas.DiaryCreate) -> Diary:
+def diary_create(db: Session, req: diary.DiaryCreate) -> Diary:
     db_obj = Diary(
         user_id=req.user_id,
         location=req.location,
@@ -20,3 +19,10 @@ def diary_create(db: Session, req: schemas.DiaryCreate) -> Diary:
     db.commit()
     db.refresh(db_obj)
     return db_obj
+
+def diary_list_get(db: Session, user_id: int, skip: int, limit: int) -> Diary:
+    return db.query(Diary.location, Diary.title, User.nickname)\
+        .join(User, Diary.user_id == User.id)\
+        .filter(Diary.user_id == user_id)\
+        .offset(skip * limit).limit(limit) \
+        .all()

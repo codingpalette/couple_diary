@@ -3,6 +3,7 @@ import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import MainPage from './routes/MainPage'
 import MenuPage from './routes/MenuPage'
+import DiaryListPage from './routes/DiaryListPage'
 import SavesPage from './routes/SavesPage'
 // import WritePage from './routes/WritePage'
 const WritePage = loadable(() => import('./routes/WritePage'))
@@ -22,6 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/menu" element={<MenuPage />} />
+        <Route path="/diary_list" element={<DiaryListPage />} />
         <Route path="/saves" element={<SavesPage />} />
         <Route path="/write" element={<WritePage />} />
       </Routes>

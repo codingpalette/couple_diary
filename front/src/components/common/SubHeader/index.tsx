@@ -24,8 +24,8 @@ const SubHeader = () => {
         setTitle('초대장 만들기')
         setLink('/menu')
         break
-      case '/list':
-        setTitle('초대장 리스트')
+      case '/diary_list':
+        setTitle('다이어리 리스트')
         setLink('/menu')
         break
       case '/saves':
