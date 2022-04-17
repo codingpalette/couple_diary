@@ -433,6 +433,12 @@ const WritePage = () => {
     }
   }
 
+  useEffect(() => {
+    if (userError) {
+      navigate('/')
+    }
+  }, [navigate, userError])
+
   return (
     <>
       <MapContainer>
