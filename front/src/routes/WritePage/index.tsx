@@ -276,13 +276,10 @@ const WritePage = () => {
 
   // 모달에 들어갈 데이터값
   const [modalData, setModalData] = useState<any>(null)
-  // 저장 확인 모달 상태값
-  const [saveModalActive, saveModalActiveToggle] = useBoolean(false)
 
   // 저장 확인 모달 오픈 이벤트
   const onClickSaveModalOpen = () => {
     setSaveFormModalActive(true)
-    // saveModalActiveToggle()
   }
   // 저장 확인 모달 닫기 이벤트
   const onClickSaveModalClose = () => {
@@ -343,25 +340,13 @@ const WritePage = () => {
     onClickCardDeleteModalClose()
   }
 
-  // 다이어리 저장
-  const onClickDiarySave = async () => {
-    try {
-      const res = await axios.post('/api/diary', {
-        user_id: userData.data.id,
-      })
-      console.log(res)
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
   // 마커 클릭 했을 떄 이벤트
   const onClickMarker = (v: any) => {
     const mapList = useDiary.mapList.filter(f => f.position.lng === v.lng && f.position.lat === v.lat)
-    console.log(mapList)
+    // console.log(mapList)
     if (mapList.length > 1) {
       setOverLapData(mapList)
-      setOverlapListModalActive(true)
+      onClickOverlapListModalOpen()
     } else {
       setModalData(mapList[0])
       setSlideModalActive(true)
@@ -407,6 +392,47 @@ const WritePage = () => {
     }
   }
 
+  // 다이어리 저장
+  const onClickDiarySave = async () => {
+    if (useDiary.location.trim().length === 0) {
+      ErrorMessageOpen('다이어리 주소를 입력해 주세요.')
+      return
+    }
+    if (checkSpecial(useDiary.location)) {
+      ErrorMessageOpen('다이어리 주소는 특수문자가 불가능 합니다.')
+      return
+    }
+    if (useDiary.title.trim().length === 0) {
+      ErrorMessageOpen('다이어리 제목을 입력해 주세요.')
+      return
+    }
+    setBackLoadingActive(true)
+    try {
+      let res = null
+      res = await axios.post('/api/diary', {
+        user_id: userData.data.id,
+        location: useDiary.location,
+        title: useDiary.title,
+        description: useDiary.description,
+        mapList: useDiary.mapList,
+      })
+      console.log(res)
+      setBackLoadingActive(false)
+      if (res?.status === 200) {
+        SuccessMessageOpen('저장에 성공 했습니다.')
+        // navigate(`/write?save_id=${res.data.id}`)
+        onClickSaveModalClose()
+      }
+    } catch (e: any) {
+      setBackLoadingActive(false)
+      if (e.response.data.detail) {
+        ErrorMessageOpen(e.response.data.detail)
+      } else {
+        ErrorMessageOpen('저장에 실패 했습니다.')
+      }
+    }
+  }
+
   return (
     <>
       <MapContainer>
@@ -423,19 +449,6 @@ const WritePage = () => {
 
         {/*<div style={{ width: '100%', height: '100%' }} id="map" ref={mapRef} />*/}
       </MapContainer>
-
-      <ModalContainer isActive={saveModalActive} closeEvent={saveModalActiveToggle} maxWidth="500px">
-        <Card title="다이어리 저장">
-          <SelectContainerBox
-            title="다이어리를 저장 하시겠습니까?"
-            okEvent={onClickDiarySave}
-            okText="저장"
-            okTextType="primary"
-            closeEvent={saveModalActiveToggle}
-            closeText="취소"
-          />
-        </Card>
-      </ModalContainer>
 
       <ModalContainer isActive={createModalActive} closeEvent={onClickCreateModalClose} maxWidth="500px">
         <Card title="카드 추가">
@@ -554,6 +567,7 @@ const WritePage = () => {
         closeEvent={onClickSaveModalClose}
         temporarySave={temporarySave}
         formMode={formMode}
+        onClickDiarySave={onClickDiarySave}
       />
 
       <BackLoading isActive={backLoadingActive} />

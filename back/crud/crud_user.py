@@ -2,11 +2,11 @@ from typing import Any, Dict, Optional, Union
 
 from sqlalchemy.orm import Session
 
-from crud.base import CRUDBase
+
 from models.user import User
 from schemas.user import UserEmail, UserNickname, UserCreate, UserLogin, UserTokenUpdate
 
-class CRUDUser(CRUDBase[User, UserCreate, UserLogin]):
+class CRUDUser():
 
     def get_user_by_email(self, db: Session, req: UserEmail) -> User:
         return db.query(User).filter(User.email == req.email).first()
@@ -41,4 +41,4 @@ class CRUDUser(CRUDBase[User, UserCreate, UserLogin]):
         return item
 
 
-user = CRUDUser(User)
+user = CRUDUser()

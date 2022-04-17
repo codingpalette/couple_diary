@@ -13,11 +13,12 @@ export type SaveFormModalProps = {
   isActive?: boolean | undefined
   closeEvent?: (e?: React.MouseEvent<HTMLButtonElement>) => void
   temporarySave?: (e?: React.MouseEvent<HTMLButtonElement>) => void
+  onClickDiarySave?: (e?: React.MouseEvent<HTMLButtonElement>) => void
   formMode: 'create' | 'diary_save' | 'diary'
   // maxWidth: string
 }
 
-const SaveFormModal = ({ isActive, closeEvent, temporarySave, formMode }: SaveFormModalProps) => {
+const SaveFormModal = ({ isActive, closeEvent, temporarySave, formMode, onClickDiarySave }: SaveFormModalProps) => {
   const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
   const [useDiary, setUseDiary] = useRecoilState(diaryState)
   const [closed, setClosed] = useState(true)
@@ -102,7 +103,9 @@ const SaveFormModal = ({ isActive, closeEvent, temporarySave, formMode }: SaveFo
                 임시저장
               </Button>
             ) : null}
-            <Button theme="primary">{formMode === 'create' || formMode === 'diary_save' ? '출간' : '수정'}</Button>
+            <Button theme="primary" onClick={onClickDiarySave}>
+              {formMode === 'create' || formMode === 'diary_save' ? '만들기' : '수정'}
+            </Button>
           </div>
         </div>
       </Container>
