@@ -423,7 +423,7 @@ const WritePage = () => {
       setBackLoadingActive(false)
       if (res?.status === 200) {
         SuccessMessageOpen('저장에 성공 했습니다.')
-        // navigate(`/write?save_id=${res.data.id}`)
+        navigate(`/diary_list`)
         onClickSaveModalClose()
       }
     } catch (e: any) {

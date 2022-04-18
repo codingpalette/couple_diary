@@ -24,6 +24,7 @@ def diary_create(db: Session, req: diary.DiaryCreate) -> Diary:
 def diary_list_get(db: Session, user_id: int, skip: int, limit: int) -> Diary:
     return db.query(Diary.id, Diary.location, Diary.title, User.nickname)\
         .join(User, Diary.user_id == User.id)\
-        .filter(Diary.user_id == user_id)\
+        .filter(Diary.user_id == user_id) \
+        .order_by(Diary.id.desc()) \
         .offset(skip * limit).limit(limit) \
         .all()
