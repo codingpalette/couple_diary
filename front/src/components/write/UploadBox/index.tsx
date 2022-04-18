@@ -4,11 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faImages } from '@fortawesome/free-solid-svg-icons'
 
 export type UploadBoxProps = {
+  inputRef: any
   onFileChange?: React.ChangeEventHandler
 }
 
-const UploadBox = ({ onFileChange }: UploadBoxProps) => {
-  const inputRef = useRef<any>(null)
+const UploadBox = ({ inputRef, onFileChange }: UploadBoxProps) => {
+  // const inputRef = useRef<any>(null)
 
   // 배경이미지 추가
   const onClickUploadImageInput = useCallback(() => {

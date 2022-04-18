@@ -22,11 +22,11 @@ const NavBar = ({ createModalOpen, onClickSaveModalOpen, onClickListModalOpen }:
         <NabBtn onClick={createModalOpen}>
           <FontAwesomeIcon icon={faPlusSquare} size="lg" />
         </NabBtn>
-        <NabBtn onClick={onClickSaveModalOpen}>
-          <FontAwesomeIcon icon={faSave} size="lg" />
-        </NabBtn>
         <NabBtn onClick={onClickListModalOpen}>
           <FontAwesomeIcon icon={faList} size="lg" />
+        </NabBtn>
+        <NabBtn onClick={onClickSaveModalOpen}>
+          <FontAwesomeIcon icon={faSave} size="lg" />
         </NabBtn>
         <NabBtn onClick={() => navigate('/menu')}>
           <FontAwesomeIcon icon={faSignOutAlt} size="lg" />

@@ -5,7 +5,7 @@ import useInput from '../../hooks/useInput'
 import useBoolean from '../../hooks/useBoolean'
 import Card from '../../components/common/Card'
 import Input from '../../components/common/Input'
-import NavBar from '../../components/write/NavBar'
+import NavBar from '../../components/diary/NavBar'
 import Button from '../../components/common/Button'
 import ImageBox from '../../components/write/ImageBox'
 import MapContainer from '../../containers/MapContainer'
@@ -165,7 +165,7 @@ const WritePage = () => {
       fullAddr += extraAddr !== '' ? ` (${extraAddr})` : ''
 
       const geocoder = new window.kakao.maps.services.Geocoder()
-      console.log(fullAddr)
+      // console.log(fullAddr)
 
       // 주소로 좌표를 검색합니다
       geocoder.addressSearch(fullAddr, function (result: any, status: any) {
@@ -198,11 +198,14 @@ const WritePage = () => {
       } catch (e) {
         console.log(e)
       } finally {
+        inputRef.current.value = null
         setBackLoadingActive(false)
       }
     },
     [images],
   )
+  // 이미지 인풋 ref
+  const inputRef = useRef<any>(null)
   // 이미지 삭제 모달 온,오프 상태값
   const [imageRemoveModalActive, imageRemoveModalActiveToggle] = useBoolean(false)
   // 삭제할 이미지 아이디 값
@@ -245,13 +248,13 @@ const WritePage = () => {
         fullAddr: mapInputAddress,
         position: { lng: mapObjData.coords.La, lat: mapObjData.coords.Ma },
       }
-      console.log('data', data)
+      // console.log('data', data)
       // setMapList([...mapList, { content: '', position: { lng: 126.987024769656, lat: 37.5705611277251 } }])
       // setMapList([...mapList, data])
       setUseDiary({ ...useDiary, mapList: [...useDiary.mapList, data] })
       // setAddressSearchOpen(false)
     } else {
-      console.log(selectList)
+      // console.log(selectList)
       const data = {
         diaryTitle,
         date: dayjs(startDate).format('YYYY-MM-DD'),
@@ -496,7 +499,7 @@ const WritePage = () => {
             <div className="upload_group">
               {images.length > 0 &&
                 images.map((v: any) => <ImageBox key={v.id} img={v.url} onClick={() => imageRemoveModalOpen(v.id)} />)}
-              <UploadBox onFileChange={onFileChange} />
+              <UploadBox inputRef={inputRef} onFileChange={onFileChange} />
             </div>
           </CardInputGroup>
           <CardInputGroup>
