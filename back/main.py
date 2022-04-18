@@ -26,7 +26,9 @@ def create_app():
     app = FastAPI()
 
     origins = [
-        'http://localhost:3000'
+        'http://localhost:3000',
+        'https://nyamo.co.kr',
+        'https://www.nyamo.co.kr',
     ]
 
     app.add_middleware(middleware_class=BaseHTTPMiddleware, dispatch=access_control)
