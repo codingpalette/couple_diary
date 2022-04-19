@@ -37,10 +37,10 @@ def user_check(request: Request):
 # 유저 생성
 @router.post('')
 def user_create(req: schemas.UserCreate, db: Session = Depends(get_db)):
-    user_email_info = crud_user.get_user_by_email(db, req)
+    user_login_id_info = crud_user.get_user_by_login_id(db, req)
     # json_compatible_item_data = jsonable_encoder(user_info)
     # print(json_compatible_item_data)
-    if user_email_info:
+    if user_login_id_info:
         return JSONResponse(status_code=401, content={"result": "fail", "message": "이미 존재하는 아이디 입니다"})
     user_nickname_info = crud_user.get_user_by_nickname(db, req)
     if user_nickname_info:
@@ -58,16 +58,16 @@ def user_create(req: schemas.UserCreate, db: Session = Depends(get_db)):
 
 @router.post('/login')
 def user_login(req: schemas.UserLogin, db: Session = Depends(get_db)):
-    user_email_info = crud_user.get_user_by_email(db, req)
-    if not user_email_info:
+    user_login_id_info = crud_user.get_user_by_login_id(db, req)
+    if not user_login_id_info:
         return JSONResponse(status_code=401, content={"result": "fail", "message": "존재하지 않는 아이디 입니다"})
     else:
-        password_check = bcrypt.checkpw(req.password.encode('utf-8'), user_email_info.password.encode('utf-8'))
+        password_check = bcrypt.checkpw(req.password.encode('utf-8'), user_login_id_info.password.encode('utf-8'))
         if not password_check:
             return JSONResponse(status_code=401, content={"result": "fail", "message": "비밀번호가 틀립니다"})
         else:
-            access_token = token.create_token('access_token', user_email_info)
-            refresh_token = token.create_token('refresh_token', user_email_info)
+            access_token = token.create_token('access_token', user_login_id_info)
+            refresh_token = token.create_token('refresh_token', user_login_id_info)
             token_update = crud_user.token_update(db, req, refresh_token)
             if token_update:
                 content = {"result": "success", "message": "로그인 성공"}

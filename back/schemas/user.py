@@ -4,13 +4,13 @@ from pydantic import BaseModel
 
 class UserBase(BaseModel):
     # pass
-    email: str
+    login_id: str
 
     class Config:
         orm_mode = True
 
 
-class UserEmail(UserBase):
+class UserLoginId(UserBase):
     pass
 
 

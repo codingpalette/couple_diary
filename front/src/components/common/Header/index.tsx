@@ -21,7 +21,7 @@ const Header = () => {
   const { data: isActive, mutate: setIsActive } = useLoginModalSWR()
   // const [isActive, setIsActive] = useState(false)
   const [mode, setMode] = useState('login')
-  const [email, onChangeEmail, onResetEmail] = useInput('')
+  const [login_id, onChangeLoginId, onResetLoginId] = useInput('')
   const [nickname, onChangeNickname, onResetNickname] = useInput('')
   const [password, onChangePassword, onResetPassword] = useInput('')
   const [passwordCheck, onChangePasswordCheck, onResetPasswordCheck] = useInput('')
@@ -42,8 +42,8 @@ const Header = () => {
     async (e: { preventDefault: () => void }) => {
       e.preventDefault()
 
-      if (!checkEmail(email)) {
-        ErrorMessageOpen('이메일을 입력해 주세요')
+      if (login_id.trim().length === 0) {
+        ErrorMessageOpen('아이디를 입력해 주세요')
         return
       }
 
@@ -66,18 +66,18 @@ const Header = () => {
         let res
         if (mode === 'login') {
           res = await axios.post('/api/user/login', {
-            email,
+            login_id,
             password,
           })
         } else {
           res = await axios.post('/api/user', {
-            email,
+            login_id,
             nickname,
             password,
           })
         }
         if (res.data.result === 'success') {
-          onResetEmail()
+          onResetLoginId()
           onResetNickname()
           onResetPassword()
           onResetPasswordCheck()
@@ -98,7 +98,7 @@ const Header = () => {
         }
       }
     },
-    [mode, email, nickname, password, passwordCheck],
+    [mode, login_id, nickname, password, passwordCheck],
   )
 
   return (
@@ -124,7 +124,7 @@ const Header = () => {
         <Card title="로그인">
           <LoginFormBox>
             <form onSubmit={onSubmitLogin}>
-              <Input value={email} onChange={onChangeEmail} placeholder="이메일" />
+              <Input value={login_id} onChange={onChangeLoginId} placeholder="아이디" />
               {mode === 'create' && (
                 <Input value={nickname} onChange={onChangeNickname} type="text" placeholder="닉네임" />
               )}

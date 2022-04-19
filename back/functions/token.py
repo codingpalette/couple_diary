@@ -13,7 +13,7 @@ def create_token(type, user_info, renewal = False):
         if not renewal:
             payload = {
                 "id": user_info.id,
-                "email": user_info.email,
+                "login_id": user_info.login_id,
                 "nickname": user_info.nickname,
                 "level": user_info.level,
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1)
@@ -21,7 +21,7 @@ def create_token(type, user_info, renewal = False):
         else:
             payload = {
                 "id": user_info['id'],
-                "email": user_info['email'],
+                "login_id": user_info['login_id'],
                 "nickname": user_info['nickname'],
                 "level": user_info['level'],
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1)
@@ -29,7 +29,7 @@ def create_token(type, user_info, renewal = False):
     else:
         payload = {
             "id": user_info.id,
-            "email": user_info.email,
+            "login_id": user_info.login_id,
             "nickname": user_info.nickname,
             "level": user_info.level,
             'exp': datetime.datetime.utcnow() + datetime.timedelta(days=14)

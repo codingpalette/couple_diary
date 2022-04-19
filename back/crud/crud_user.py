@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 
 from models.user import User
-from schemas.user import UserEmail, UserNickname, UserCreate, UserLogin, UserTokenUpdate
+from schemas.user import UserLoginId, UserNickname, UserCreate, UserLogin, UserTokenUpdate
 
 def get_user_by_nickname(db: Session, req: UserNickname) -> User:
     return db.query(User).filter(User.nickname == req.nickname).first()
@@ -12,13 +12,13 @@ def get_user_by_nickname(db: Session, req: UserNickname) -> User:
 def user_nickname_get(db: Session, nickname: str) -> User:
     return db.query(User).filter(User.nickname == nickname).first()
 
-def get_user_by_email(db: Session, req: UserEmail) -> User:
-    return db.query(User).filter(User.email == req.email).first()
+def get_user_by_login_id(db: Session, req: UserLoginId) -> User:
+    return db.query(User).filter(User.login_id == req.login_id).first()
 
 
 def user_create(db: Session, req: UserCreate) -> User:
     db_obj = User(
-        email=req.email,
+        login_id=req.login_id,
         nickname=req.nickname,
         password=req.password
     )
@@ -27,8 +27,8 @@ def user_create(db: Session, req: UserCreate) -> User:
     db.refresh(db_obj)
     return db_obj
 
-def token_update(db: Session, user: UserEmail, refresh_token: str) -> User:
-    item = get_user_by_email(db, user)
+def token_update(db: Session, user: UserLoginId, refresh_token: str) -> User:
+    item = get_user_by_login_id(db, user)
     item.refresh_token = refresh_token
     db.commit()
     db.refresh(item)
