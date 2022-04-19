@@ -9,6 +9,7 @@ import { useRecoilState } from 'recoil'
 import diaryState from '../../stores/useDiaryState'
 import OverlapListModal from '../../components/diary/OverlapListModal'
 import SlideModal from '../../components/diary/SlideModal'
+import NavBar from '../../components/diary/NavBar'
 
 const DiaryPage = () => {
   const params = useParams()
@@ -93,6 +94,8 @@ const DiaryPage = () => {
           ))}
         </Map>
       </MapContainer>
+
+      <NavBar />
 
       <SlideModal isActive={slideModalActive} onClickModalClose={onClickSlideModalClose} modalData={modalData} />
 
