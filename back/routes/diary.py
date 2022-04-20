@@ -24,6 +24,18 @@ def diary_create(req: diary.DiaryCreate, db: Session = Depends(get_db)):
     else:
         return crud_diary.diary_create(db, req)
 
+@router.put('', response_model=diary.DiaryModify)
+def diary_modify(req: diary.DiaryModify, db: Session = Depends(get_db)):
+    diary_info = crud_diary.diary_get2(db, req.id, req.location, req.user_id)
+    if diary_info:
+        raise HTTPException(status_code=400, detail="이미 존재하는 주소 입니다.")
+    else:
+        return crud_diary.diary_modify(db, req)
+
 @router.get('/list')
 def diary_list_get(user_id: int, skip: int, limit: int, db: Session = Depends(get_db)):
     return crud_diary.diary_list_get(db, user_id, skip, limit)
+
+@router.get('/modify')
+def diary_modify_get(id:int, db: Session = Depends(get_db)):
+    return crud_diary.diary_modify_get(db, id)

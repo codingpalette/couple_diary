@@ -51,6 +51,38 @@ const WritePage = () => {
 
   const [formMode, setFormMode] = useState<'create' | 'diary_save' | 'diary'>('create')
 
+  // 다이어리 데이터 가져오기
+  const { data: diaryData, error: diaryError } = useSWR(
+    searchParams.get('id') ? `/api/diary/modify?id=${searchParams.get('id')}` : null,
+    fetcher,
+  )
+
+  useEffect(() => {
+    if (diaryError) {
+      navigate('/menu')
+    }
+  }, [diaryError])
+
+  useEffect(() => {
+    if (diaryData === null) {
+      ErrorMessageOpen('존재하는 다이어리가 없습니다.')
+      navigate('/menu')
+    } else if (diaryData) {
+      if (diaryData.user_id === userData.data.id) {
+        const data = {
+          title: diaryData.title,
+          location: diaryData.location,
+          description: diaryData.description,
+          mapList: diaryData.content,
+        }
+        setUseDiary(data)
+        setFormMode('diary')
+      } else {
+        navigate('/menu')
+      }
+    }
+  }, [diaryData, userData])
+
   // 임시저장 데이터 가져오기
   const { data: diarySaveData, error: diarySaveError } = useSWR(
     searchParams.get('save_id') ? `/api/diary_save?save_id=${searchParams.get('save_id')}` : null,
@@ -412,14 +444,25 @@ const WritePage = () => {
     setBackLoadingActive(true)
     try {
       let res = null
-      res = await axios.post('/api/diary', {
-        user_id: userData.data.id,
-        location: useDiary.location,
-        title: useDiary.title,
-        description: useDiary.description,
-        mapList: useDiary.mapList,
-      })
-      console.log(res)
+      if (formMode === 'create') {
+        res = await axios.post('/api/diary', {
+          user_id: userData.data.id,
+          location: useDiary.location,
+          title: useDiary.title,
+          description: useDiary.description,
+          mapList: useDiary.mapList,
+        })
+      } else if (formMode === 'diary') {
+        res = await axios.put('/api/diary', {
+          id: diaryData.id,
+          user_id: userData.data.id,
+          location: useDiary.location,
+          title: useDiary.title,
+          description: useDiary.description,
+          mapList: useDiary.mapList,
+        })
+      }
+      // console.log(res)
       setBackLoadingActive(false)
       if (res?.status === 200) {
         SuccessMessageOpen('저장에 성공 했습니다.')

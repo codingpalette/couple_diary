@@ -60,6 +60,9 @@ const DiaryListPage = () => {
                     <Link to={`/@${v.nickname}/${v.location}`}>
                       <Button>보기</Button>
                     </Link>
+                    <Link to={`/write?id=${v.id}`}>
+                      <Button>수정</Button>
+                    </Link>
                   </div>
                 </div>
               </div>

@@ -34,3 +34,6 @@ class DiaryCreate(DiaryBase):
     title: Optional[str]
     description: Optional[str]
     mapList: Optional[List[MapList]]
+
+class DiaryModify(DiaryCreate):
+    id: Optional[int]
