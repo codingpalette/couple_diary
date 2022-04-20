@@ -7,7 +7,7 @@ import ModalContainer from '../../../containers/ModalContainer'
 import Card from '../Card'
 import Input from '../Input'
 import useInput from '../../../hooks/useInput'
-import { checkEmail } from '../../../hooks/useStringCheck'
+import { checkEmail, checkEnglish, checkEnglishNumber } from '../../../hooks/useStringCheck'
 import { ErrorMessageOpen, SuccessMessageOpen } from '../../../hooks/useToast'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
@@ -44,6 +44,11 @@ const Header = () => {
 
       if (login_id.trim().length === 0) {
         ErrorMessageOpen('아이디를 입력해 주세요')
+        return
+      }
+
+      if (!checkEnglishNumber(login_id.trim())) {
+        ErrorMessageOpen('아이디는 영어+숫자로 입력해 주세요')
         return
       }
 
