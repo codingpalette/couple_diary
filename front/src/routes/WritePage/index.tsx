@@ -444,7 +444,7 @@ const WritePage = () => {
     setBackLoadingActive(true)
     try {
       let res = null
-      if (formMode === 'create') {
+      if (formMode === 'create' || formMode === 'diary_save') {
         res = await axios.post('/api/diary', {
           user_id: userData.data.id,
           location: useDiary.location,
