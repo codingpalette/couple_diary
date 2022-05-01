@@ -123,16 +123,17 @@ const Header = () => {
           <div className="logo">
             <Link to="/">로고</Link>
           </div>
-
-          <div className="button_box">
-            {userData && userData.result === 'success' && !userError ? (
-              <Link to="/menu">
-                <FontAwesomeIcon icon={faUserCircle} size="2x" />
-              </Link>
-            ) : (
-              <Button onClick={onClickModalOpen}>로그인</Button>
-            )}
-          </div>
+          {!userLoading && (
+            <div className="button_box">
+              {userData && userData.result === 'success' && !userError ? (
+                <Link to="/menu">
+                  <FontAwesomeIcon icon={faUserCircle} size="2x" />
+                </Link>
+              ) : (
+                <Button onClick={onClickModalOpen}>로그인</Button>
+              )}
+            </div>
+          )}
         </HeaderTag>
       </HeaderBox>
       <ModalContainer isActive={useLoginModal} closeEvent={onClickModalClose} maxWidth="400px">
