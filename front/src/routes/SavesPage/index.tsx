@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import useSWR from 'swr'
+import React, { Fragment, useEffect, useState } from 'react'
 import fetcher from '../../hooks/fetcher'
 import { useNavigate, Link } from 'react-router-dom'
 import SubHeader from '../../components/common/SubHeader'
 import MainContainer from '../../containers/MainContainer'
 import { ContentBox } from './styles'
-import useSWRInfinite from 'swr/infinite'
 import Button from '../../components/common/Button'
 import ModalContainer from '../../containers/ModalContainer'
 import Card from '../../components/common/Card'
@@ -13,30 +11,45 @@ import SelectContainerBox from '../../components/common/SelectContainerBox'
 import BackLoading from '../../components/common/BackLoading'
 import { ErrorMessageOpen, SuccessMessageOpen } from '../../hooks/useToast'
 import axios from 'axios'
+import { useInfiniteQuery, useQuery, useQueryClient } from 'react-query'
 
 const PAGE_SIZE = 30
 const SavesPage = () => {
-  const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
+  const queryClient = useQueryClient()
+  const { isError: userIsError, data: userData } = useQuery('user_check', () => fetcher('/api/user/check'), {
+    refetchOnWindowFocus: false,
+    retry: 0,
+  })
   const navigate = useNavigate()
 
   // 임시 저장 리스트 가져오기
-  const { data, error, mutate, size, setSize, isValidating } = useSWRInfinite(
-    index => (userData ? `/api/diary_save/list?user_id=${userData.data.id}&skip=${index}&limit=${PAGE_SIZE}` : null),
-    fetcher,
+  const diaryListFetch = async ({ pageParam = 0 }) => {
+    return await fetcher(`/api/diary_save/list?user_id=${userData.data.id}&skip=${pageParam}&limit=${PAGE_SIZE}`)
+  }
+
+  const { data, error, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, status } = useInfiniteQuery(
+    '[diary_save_list]',
+    diaryListFetch,
+    {
+      enabled: !!userData,
+      getNextPageParam: (lastPage, pages) => {
+        if (pages[pages.length - 1].length === PAGE_SIZE) {
+          return pages.length
+        } else {
+          return undefined
+        }
+      },
+      refetchOnWindowFocus: false,
+      retry: 0,
+    },
   )
-  const posts = data ? [].concat(...data) : []
-  const isLoadingInitialData = !data && !error
-  const isLoadingMore = isLoadingInitialData || (size > 0 && data && typeof data[size - 1] === 'undefined')
-  const isEmpty = data?.[0]?.length === 0
-  const isReachingEnd = isEmpty || (data && data[data.length - 1]?.length < PAGE_SIZE)
-  const isRefreshing = isValidating && data && data.length === size
 
   // 인피니티 스크롤 작업 코드
   useEffect(() => {
     function onScroll() {
       if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
-        if (!isLoadingMore && !isReachingEnd) {
-          setSize(size + 1)
+        if (!isFetchingNextPage && hasNextPage) {
+          fetchNextPage()
         }
       }
     }
@@ -44,7 +57,7 @@ const SavesPage = () => {
     return () => {
       window.removeEventListener('scroll', onScroll)
     }
-  }, [isLoadingMore, isReachingEnd, size])
+  }, [isFetchingNextPage, hasNextPage])
 
   // 백그라운드 로딩 상태값
   const [backLoadingActive, setBackLoadingActive] = useState(false)
@@ -70,7 +83,7 @@ const SavesPage = () => {
       setBackLoadingActive(false)
       SuccessMessageOpen('삭제에 성공 했습니다.')
       onClickDiaryDeleteModalClose()
-      await mutate()
+      await queryClient.invalidateQueries('[diary_save_list]')
     } catch (e) {
       setBackLoadingActive(false)
       ErrorMessageOpen('삭제에 실패 했습니다.')
@@ -78,32 +91,37 @@ const SavesPage = () => {
   }
 
   useEffect(() => {
-    if (userError) {
+    if (userIsError) {
       navigate('/')
     }
-  }, [navigate, userError])
+  }, [navigate, userIsError])
 
   return (
     <>
       <SubHeader />
       <MainContainer>
         <ContentBox>
-          {posts &&
-            posts.map((v: any) => (
-              <div className="list" key={v.id}>
-                <div className="item_box">
-                  <p>{v.title}</p>
-                  <div className="btn_box">
-                    <Link to={`/write?save_id=${v.id}`}>
-                      <Button>수정</Button>
-                    </Link>
-                    <Button theme="secondary" onClick={() => onClickDiaryDeleteModalOpen(v.id)}>
-                      삭제
-                    </Button>
+          {data?.pages.map((group, i) => {
+            return (
+              <Fragment key={i}>
+                {group.map((v: any) => (
+                  <div className="list" key={v.id}>
+                    <div className="item_box">
+                      <p>{v.title}</p>
+                      <div className="btn_box">
+                        <Link to={`/write?save_id=${v.id}`}>
+                          <Button>수정</Button>
+                        </Link>
+                        <Button theme="secondary" onClick={() => onClickDiaryDeleteModalOpen(v.id)}>
+                          삭제
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                ))}
+              </Fragment>
+            )
+          })}
         </ContentBox>
       </MainContainer>
       <ModalContainer isActive={diaryDeleteModalActive} closeEvent={onClickDiaryDeleteModalClose} maxWidth="500px">

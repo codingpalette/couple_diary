@@ -88,3 +88,13 @@ def user_logout(request: Request, db: Session = Depends(get_db)):
     response.delete_cookie("refresh_token")
     return response
 
+@router.get('/test')
+def user_test():
+    print('222')
+    return {"result": "ok"}
+
+@router.get('/test2')
+def user_test2(id: int):
+    print(333)
+    print(id)
+    return True

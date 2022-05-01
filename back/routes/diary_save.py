@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from database.connection import get_db
@@ -14,7 +14,11 @@ router = APIRouter(
 
 @router.get('')
 def diary_get(save_id: int, db: Session = Depends(get_db)):
-    return crud.diary_save.get_id(db, save_id)
+    info = crud.diary_save.get_id(db, save_id)
+    if info:
+        return info
+    else:
+        raise HTTPException(status_code=400, detail="저장된 다이어리가 없습니다.")
 
 @router.post('', response_model=schemas.DiarySaveModify)
 def diary_save_create(req: schemas.DiarySaveCreate, db: Session = Depends(get_db)):

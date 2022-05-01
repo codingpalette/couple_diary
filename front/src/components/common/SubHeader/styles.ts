@@ -7,9 +7,11 @@ export const HeaderBox = styled.div`
   position: fixed;
   left: 0;
   top: 0;
-  background-color: ${colors.White};
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
   border-bottom: 1px solid ${colors.Gray_200};
   box-sizing: border-box;
+  z-index: 100;
 `
 
 export const HeaderTag = styled.header`

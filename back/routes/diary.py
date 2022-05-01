@@ -14,7 +14,12 @@ def diary_get(nickname: str, location: str, db: Session = Depends(get_db)):
     if not user_info:
         raise HTTPException(status_code=400, detail="조회를 할 수 없습니다.")
     else:
-        return crud_diary.diary_get(db, location, user_info.id)
+        diary_info = crud_diary.diary_get(db, location, user_info.id)
+        if diary_info:
+            return diary_info
+        else:
+            raise HTTPException(status_code=400, detail="존재하지 않는 다이어리 입니다.")
+
 
 @router.post('', response_model=diary.DiaryCreate)
 def diary_create(req: diary.DiaryCreate, db: Session = Depends(get_db)):
@@ -38,4 +43,9 @@ def diary_list_get(user_id: int, skip: int, limit: int, db: Session = Depends(ge
 
 @router.get('/modify')
 def diary_modify_get(id:int, db: Session = Depends(get_db)):
-    return crud_diary.diary_modify_get(db, id)
+    info = crud_diary.diary_modify_get(db, id)
+    if info:
+        return info
+    else:
+        raise HTTPException(status_code=400, detail="저장된 다이어리가 없습니다.")
+

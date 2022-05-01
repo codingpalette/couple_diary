@@ -23,7 +23,6 @@ import SaveFormModal from '../../components/write/SaveFormModal'
 import { useRecoilState } from 'recoil'
 import diaryState from '../../stores/useDiaryState'
 import { checkSpecial } from '../../hooks/useStringCheck'
-import useSWR from 'swr'
 import fetcher from '../../hooks/fetcher'
 import OverlapListModal from '../../components/diary/OverlapListModal'
 import dayjs from 'dayjs'
@@ -31,9 +30,14 @@ import PostCodeProps from '../../components/common/PostCode'
 import CardListModal from '../../components/write/CardListModal'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import SelectContainerBox from '../../components/common/SelectContainerBox'
+import { useQuery } from 'react-query'
 
 const WritePage = () => {
-  const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
+  const { isError: userIsError, data: userData } = useQuery('user_check', () => fetcher('/api/user/check'), {
+    refetchOnWindowFocus: false,
+    retry: 0,
+  })
+
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   // 다이어리 값
@@ -52,68 +56,80 @@ const WritePage = () => {
   const [formMode, setFormMode] = useState<'create' | 'diary_save' | 'diary'>('create')
 
   // 다이어리 데이터 가져오기
-  const { data: diaryData, error: diaryError } = useSWR(
-    searchParams.get('id') ? `/api/diary/modify?id=${searchParams.get('id')}` : null,
-    fetcher,
-  )
+  const {
+    isLoading: diaryLoading,
+    isError: diaryIsError,
+    data: diaryData,
+    error: diaryError,
+  } = useQuery<any, any>('diary_modify_data', () => fetcher(`/api/diary/modify?id=${searchParams.get('id')}`), {
+    enabled: !!searchParams.get('id'),
+    refetchOnWindowFocus: false,
+    retry: 0,
+  })
 
   useEffect(() => {
-    if (diaryError) {
+    if (diaryIsError) {
+      ErrorMessageOpen(diaryError.response.data.detail)
       navigate('/menu')
     }
-  }, [diaryError])
+  }, [diaryIsError])
 
   useEffect(() => {
-    if (diaryData === null) {
-      ErrorMessageOpen('존재하는 다이어리가 없습니다.')
-      navigate('/menu')
-    } else if (diaryData) {
-      if (diaryData.user_id === userData.data.id) {
-        const data = {
-          title: diaryData.title,
-          location: diaryData.location,
-          description: diaryData.description,
-          mapList: diaryData.content,
+    if (!diaryLoading) {
+      if (diaryData) {
+        if (diaryData.user_id === userData.data.id) {
+          const data = {
+            title: diaryData.title,
+            location: diaryData.location,
+            description: diaryData.description,
+            mapList: diaryData.content,
+          }
+          setUseDiary(data)
+          setFormMode('diary')
+        } else {
+          navigate('/menu')
         }
-        setUseDiary(data)
-        setFormMode('diary')
-      } else {
-        navigate('/menu')
       }
     }
-  }, [diaryData, userData])
+  }, [diaryLoading, diaryData, userData])
 
   // 임시저장 데이터 가져오기
-  const { data: diarySaveData, error: diarySaveError } = useSWR(
-    searchParams.get('save_id') ? `/api/diary_save?save_id=${searchParams.get('save_id')}` : null,
-    fetcher,
-  )
+  const {
+    isLoading: diarySaveLoading,
+    isError: diarySaveIsError,
+    data: diarySaveData,
+    error: diarySaveError,
+  } = useQuery<any, any>('diary_save_data', () => fetcher(`/api/diary_save?save_id=${searchParams.get('save_id')}`), {
+    enabled: !!searchParams.get('save_id'),
+    refetchOnWindowFocus: false,
+    retry: 0,
+  })
 
   useEffect(() => {
-    if (diarySaveError) {
+    if (diarySaveIsError) {
+      ErrorMessageOpen(diarySaveError.response.data.detail)
       navigate('/menu')
     }
-  }, [diarySaveError])
+  }, [diarySaveIsError, diarySaveError])
 
   useEffect(() => {
-    if (diarySaveData === null) {
-      ErrorMessageOpen('저장된 다이어리가 없습니다.')
-      navigate('/menu')
-    } else if (diarySaveData) {
-      if (diarySaveData.user_id === userData.data.id) {
-        const data = {
-          title: diarySaveData.title,
-          location: diarySaveData.location,
-          description: diarySaveData.description,
-          mapList: diarySaveData.content,
+    if (!diarySaveLoading) {
+      if (diarySaveData) {
+        if (diarySaveData.user_id === userData.data.id) {
+          const data = {
+            title: diarySaveData.title,
+            location: diarySaveData.location,
+            description: diarySaveData.description,
+            mapList: diarySaveData.content,
+          }
+          setUseDiary(data)
+          setFormMode('diary_save')
+        } else {
+          navigate('/menu')
         }
-        setUseDiary(data)
-        setFormMode('diary_save')
-      } else {
-        navigate('/menu')
       }
     }
-  }, [diarySaveData, userData])
+  }, [diarySaveLoading, diarySaveData, userData])
 
   // 달력 상태값
   const [startDate, setStartDate] = useState<Date | null>(new Date())
@@ -480,10 +496,10 @@ const WritePage = () => {
   }
 
   useEffect(() => {
-    if (userError) {
+    if (userIsError) {
       navigate('/')
     }
-  }, [navigate, userError])
+  }, [navigate, userIsError])
 
   return (
     <>

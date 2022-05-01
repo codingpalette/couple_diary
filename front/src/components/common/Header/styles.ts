@@ -7,7 +7,7 @@ export const HeaderBox = styled.div`
   left: 0;
   top: 0;
   background-color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(10px);
   z-index: 100;
 `
 

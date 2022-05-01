@@ -5,8 +5,8 @@ import Button from '../../common/Button'
 import { useRecoilState } from 'recoil'
 import diaryState from '../../../stores/useDiaryState'
 import Textarea from '../../common/Textarea'
-import useSWR from 'swr'
 import fetcher from '../../../hooks/fetcher'
+import { useQuery } from 'react-query'
 
 export type SaveFormModalProps = {
   // children: React.ReactNode
@@ -19,7 +19,10 @@ export type SaveFormModalProps = {
 }
 
 const SaveFormModal = ({ isActive, closeEvent, temporarySave, formMode, onClickDiarySave }: SaveFormModalProps) => {
-  const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
+  const { data: userData } = useQuery('user_check', () => fetcher('/api/user/check'), {
+    refetchOnWindowFocus: false,
+    retry: 0,
+  })
   const [useDiary, setUseDiary] = useRecoilState(diaryState)
   const [closed, setClosed] = useState(true)
 

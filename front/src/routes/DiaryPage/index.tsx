@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import MapContainer from '../../containers/MapContainer'
 import { Map, MapMarker } from 'react-kakao-maps-sdk'
 import { useNavigate, useParams } from 'react-router-dom'
-import useSWR from 'swr'
 import fetcher from '../../hooks/fetcher'
 import { ErrorMessageOpen } from '../../hooks/useToast'
 import { useRecoilState } from 'recoil'
@@ -10,6 +9,7 @@ import diaryState from '../../stores/useDiaryState'
 import OverlapListModal from '../../components/diary/OverlapListModal'
 import SlideModal from '../../components/diary/SlideModal'
 import NavBar from '../../components/diary/NavBar'
+import { useQuery } from 'react-query'
 
 const DiaryPage = () => {
   const params = useParams()
@@ -26,31 +26,41 @@ const DiaryPage = () => {
   const [slideModalActive, setSlideModalActive] = useState(false)
 
   // 데이터 가져오기
-  const { data: diaryData, error: diaryError } = useSWR(
-    params ? `/api/diary?nickname=${params.nickname}&location=${params.location}` : null,
-    fetcher,
+  const {
+    isLoading: diaryLoading,
+    isError: diaryIsError,
+    data: diaryData,
+    error: diaryError,
+  } = useQuery<any, any>(
+    'diary_data',
+    () => fetcher(`/api/diary?nickname=${params.nickname}&location=${params.location}`),
+    {
+      enabled: !!params,
+      refetchOnWindowFocus: false,
+      retry: 0,
+    },
   )
 
   useEffect(() => {
-    if (diaryError) {
+    if (diaryIsError) {
+      ErrorMessageOpen(diaryError.response.data.detail)
       navigate('/')
     }
-  }, [diaryError])
+  }, [diaryIsError])
 
   useEffect(() => {
-    if (diaryData === null) {
-      ErrorMessageOpen('저장된 다이어리가 없습니다.')
-      navigate('/')
-    } else if (diaryData) {
-      const data = {
-        title: diaryData.title,
-        location: diaryData.location,
-        description: diaryData.description,
-        mapList: diaryData.content,
+    if (!diaryLoading) {
+      if (diaryData) {
+        const data = {
+          title: diaryData.title,
+          location: diaryData.location,
+          description: diaryData.description,
+          mapList: diaryData.content,
+        }
+        setUseDiary(data)
       }
-      setUseDiary(data)
     }
-  }, [diaryData])
+  }, [diaryLoading, diaryData])
 
   // 오버랩 모달 오픈 이벤트
   const onClickOverlapListModalOpen = () => {

@@ -2,22 +2,31 @@ import React, { useEffect, useLayoutEffect } from 'react'
 import SubHeader from '../../components/common/SubHeader'
 import MenuList from '../../components/common/MenuList'
 import MainContainer from '../../containers/MainContainer'
-
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import useSWR from 'swr'
 import fetcher from '../../hooks/fetcher'
+import { useQuery, useQueryClient } from 'react-query'
 
 const MenuPage = () => {
-  const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
+  const queryClient = useQueryClient()
   const navigate = useNavigate()
+
+  const {
+    isLoading: userLoading,
+    isError: userIsError,
+    data: userData,
+    error: userError,
+  } = useQuery('user_check', () => fetcher('/api/user/check'), {
+    refetchOnWindowFocus: false,
+    retry: 0,
+  })
 
   const onClickLogOut = async (e: any) => {
     e.preventDefault()
     try {
       const res = await axios.post('/api/user/logout')
       if (res.data.result === 'success') {
-        await userMutate()
+        await queryClient.invalidateQueries('user_check')
         navigate('/')
       }
     } catch (e) {
@@ -26,10 +35,10 @@ const MenuPage = () => {
   }
 
   useEffect(() => {
-    if (userError) {
+    if (userIsError) {
       navigate('/')
     }
-  }, [navigate, userError])
+  }, [navigate, userIsError])
 
   return (
     <>

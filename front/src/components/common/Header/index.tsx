@@ -11,15 +11,25 @@ import { checkEmail, checkEnglish, checkEnglishNumber } from '../../../hooks/use
 import { ErrorMessageOpen, SuccessMessageOpen } from '../../../hooks/useToast'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
-import useLoginModalSWR from '../../../stores/useLoginModalSWR'
-import useSWR from 'swr'
 import fetcher from '../../../hooks/fetcher'
+import { useQuery, useQueryClient } from 'react-query'
+import { useRecoilState } from 'recoil'
+import loginModalState from '../../../stores/useLoginModalState'
 
 const Header = () => {
-  const { data: userData, error: userError, mutate: userMutate } = useSWR('/api/user/check', fetcher)
+  const queryClient = useQueryClient()
+  const {
+    isLoading: userLoading,
+    isError: userIsError,
+    data: userData,
+    error: userError,
+  } = useQuery('user_check', () => fetcher('/api/user/check'), {
+    refetchOnWindowFocus: false,
+    retry: 0,
+  })
 
-  const { data: isActive, mutate: setIsActive } = useLoginModalSWR()
-  // const [isActive, setIsActive] = useState(false)
+  const [useLoginModal, setLoginModal] = useRecoilState(loginModalState)
+
   const [mode, setMode] = useState('login')
   const [login_id, onChangeLoginId, onResetLoginId] = useInput('')
   const [nickname, onChangeNickname, onResetNickname] = useInput('')
@@ -27,11 +37,11 @@ const Header = () => {
   const [passwordCheck, onChangePasswordCheck, onResetPasswordCheck] = useInput('')
 
   const onClickModalOpen = () => {
-    setIsActive(true)
+    setLoginModal(true)
   }
 
   const onClickModalClose = () => {
-    setIsActive(false)
+    setLoginModal(false)
   }
 
   const onClickModeChange = useCallback(() => {
@@ -88,7 +98,7 @@ const Header = () => {
           onResetPasswordCheck()
           if (mode === 'login') {
             onClickModalClose()
-            await userMutate()
+            await queryClient.invalidateQueries('user_check')
           } else {
             SuccessMessageOpen(res.data.message)
           }
@@ -125,7 +135,7 @@ const Header = () => {
           </div>
         </HeaderTag>
       </HeaderBox>
-      <ModalContainer isActive={isActive} closeEvent={onClickModalClose} maxWidth="400px">
+      <ModalContainer isActive={useLoginModal} closeEvent={onClickModalClose} maxWidth="400px">
         <Card title="로그인">
           <LoginFormBox>
             <form onSubmit={onSubmitLogin}>
