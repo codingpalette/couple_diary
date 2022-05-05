@@ -104,12 +104,10 @@ const Header = () => {
           }
         }
       } catch (e: any) {
-        if (e.response.data) {
-          console.log(e.response.data)
-          ErrorMessageOpen(e.response.data.message)
-        }
         if (e.response.data.detail) {
           ErrorMessageOpen(e.response.data.detail.message)
+        } else {
+          ErrorMessageOpen('에러가 발생 했습니다.')
         }
       }
     },

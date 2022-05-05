@@ -24,7 +24,7 @@ def create_app():
 
     Base.metadata.create_all(bind=engine)
     docs = config['DOCS']
-    app = FastAPI(docs_url="/nyamo_docs" if docs == 'True' else None, redoc_url=None)
+    app = FastAPI(docs_url="/docs" if docs == 'True' else None, redoc_url=None)
 
     origins = [
         'http://localhost:3000',
