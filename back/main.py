@@ -9,7 +9,8 @@ from middlewares.auth_check import access_control
 
 from sqlalchemy.orm import Session
 from database.connection import get_db, Base, engine
-
+from config import conf
+config = conf()
 
 
 class SPAStaticFiles(StaticFiles):
@@ -22,8 +23,8 @@ class SPAStaticFiles(StaticFiles):
 def create_app():
 
     Base.metadata.create_all(bind=engine)
-
-    app = FastAPI()
+    docs = config['DOCS']
+    app = FastAPI(docs_url="/nyamo_docs" if docs == 'True' else None, redoc_url=None)
 
     origins = [
         'http://localhost:3000',
