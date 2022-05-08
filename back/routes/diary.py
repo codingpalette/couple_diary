@@ -10,6 +10,13 @@ router = APIRouter(
 
 @router.get('')
 def diary_get(nickname: str, location: str, db: Session = Depends(get_db)):
+    """
+    :param nickname:
+    :param location:
+    :param db:
+    :return:
+    """
+
     user_info = crud_user.user_nickname_get(db, nickname)
     if not user_info:
         raise HTTPException(status_code=400, detail="조회를 할 수 없습니다.")
@@ -23,6 +30,11 @@ def diary_get(nickname: str, location: str, db: Session = Depends(get_db)):
 
 @router.post('', response_model=diary.DiaryCreate)
 def diary_create(req: diary.DiaryCreate, db: Session = Depends(get_db)):
+    """
+    :param req:
+    :param db:
+    :return:
+    """
     diary_info = crud_diary.diary_get(db, req.location, req.user_id)
     if diary_info:
         raise HTTPException(status_code=400, detail="이미 존재하는 주소 입니다.")
@@ -31,6 +43,11 @@ def diary_create(req: diary.DiaryCreate, db: Session = Depends(get_db)):
 
 @router.put('', response_model=diary.DiaryModify)
 def diary_modify(req: diary.DiaryModify, db: Session = Depends(get_db)):
+    """
+    :param req:
+    :param db:
+    :return:
+    """
     diary_info = crud_diary.diary_get2(db, req.id, req.location, req.user_id)
     if diary_info:
         raise HTTPException(status_code=400, detail="이미 존재하는 주소 입니다.")
@@ -39,10 +56,22 @@ def diary_modify(req: diary.DiaryModify, db: Session = Depends(get_db)):
 
 @router.get('/list')
 def diary_list_get(user_id: int, skip: int, limit: int, db: Session = Depends(get_db)):
+    """
+    :param user_id:
+    :param skip:
+    :param limit:
+    :param db:
+    :return:
+    """
     return crud_diary.diary_list_get(db, user_id, skip, limit)
 
 @router.get('/modify')
 def diary_modify_get(id:int, db: Session = Depends(get_db)):
+    """
+    :param id:
+    :param db:
+    :return:
+    """
     info = crud_diary.diary_modify_get(db, id)
     if info:
         return info
