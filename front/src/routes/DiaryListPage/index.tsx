@@ -6,6 +6,7 @@ import MainContainer from '../../containers/MainContainer'
 import Button from '../../components/common/Button'
 import { ContentBox } from '../SavesPage/styles'
 import { useQuery, useInfiniteQuery } from 'react-query'
+import CardList from '../../components/common/CardList'
 
 const PAGE_SIZE = 30
 const DiaryListPage = () => {
@@ -37,6 +38,10 @@ const DiaryListPage = () => {
     },
   )
 
+  useEffect(() => {
+    console.log(data)
+  }, [data])
+
   // 인피니티 스크롤 작업 코드
   useEffect(() => {
     function onScroll() {
@@ -63,6 +68,7 @@ const DiaryListPage = () => {
       <SubHeader />
       <MainContainer>
         <ContentBox>
+          <CardList />
           {data?.pages.map((group, i) => {
             return (
               <Fragment key={i}>

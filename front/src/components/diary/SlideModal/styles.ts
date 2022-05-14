@@ -66,12 +66,6 @@ export const SlideContainer = styled.div`
     }
   }
 
-  .swiper-container {
-    position: relative;
-    background-color: #000;
-    //max-width: 500px;
-  }
-
   .slide_box {
     position: relative;
     &:before {

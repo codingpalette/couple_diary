@@ -1,16 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react'
-import ModalContainer from '../../../containers/ModalContainer'
-import Button from '../../common/Button'
+import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleLeft, faAngleRight, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
 import { SlideContainer, SlideModalBox } from './styles'
 
-import { Swiper, SwiperSlide } from 'swiper/react'
-import SwiperCore, { Navigation, Pagination, A11y } from 'swiper'
-import 'swiper/swiper-bundle.min.css'
-import 'swiper/swiper.min.css'
-SwiperCore.use([Navigation, Pagination, A11y])
+import Slider from 'react-slick'
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
 
 export type SlideModalProps = {
   /** 모달 온, 오프 여부 **/
@@ -24,8 +20,13 @@ export type SlideModalProps = {
 const SlideModal = ({ isActive, onClickModalClose, modalData }: SlideModalProps) => {
   if (!isActive) return null
 
-  const prevRef = useRef<HTMLDivElement>(null)
-  const nextRef = useRef<HTMLDivElement>(null)
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  }
 
   return (
     <>
@@ -43,58 +44,20 @@ const SlideModal = ({ isActive, onClickModalClose, modalData }: SlideModalProps)
                 <span className="date">{modalData.date}</span>
               </div>
               <div className="slide_container">
-                <Swiper
-                  slidesPerView={1}
-                  loop={true}
-                  // navigation={{
-                  //   // Both prevEl & nextEl are null at render so this does not work
-                  //   prevEl: prevRef.current ? prevRef.current : undefined,
-                  //   nextEl: nextRef.current ? nextRef.current : undefined,
-                  // }}
-                  onSwiper={swiper => {
-                    // Delay execution for the refs to be defined
-                    setTimeout(() => {
-                      // Override prevEl & nextEl now that refs are defined
-                      // eslint-disable-next-line no-param-reassign,@typescript-eslint/ban-ts-comment
-                      // @ts-ignore
-                      swiper.params.navigation.prevEl = prevRef.current
-                      // eslint-disable-next-line no-param-reassign,@typescript-eslint/ban-ts-comment
-                      // @ts-ignore
-                      swiper.params.navigation.nextEl = nextRef.current
-
-                      // Re-init navigation
-                      swiper.navigation.destroy()
-                      swiper.navigation.init()
-                      swiper.navigation.update()
-                    })
-                  }}
-                  // onSlideChange={() => console.log('slide change')}
-                >
+                <Slider {...settings}>
                   {modalData.images.map((v: any) => (
-                    <SwiperSlide key={v.id}>
+                    <div key={v.id}>
                       <div className="slide_box">
                         <img src={v.url} alt="img" />
                       </div>
-                    </SwiperSlide>
+                    </div>
                   ))}
-                </Swiper>
-                <div className="navigation prev" ref={prevRef}>
-                  <FontAwesomeIcon icon={faAngleLeft} size="lg" />
-                </div>
-                <div className="navigation next" ref={nextRef}>
-                  <FontAwesomeIcon icon={faAngleRight} size="lg" />
-                </div>
+                </Slider>
               </div>
-              {/*<div className="content_modal_btn_box">*/}
-              {/*  <button>내용보기</button>*/}
-              {/*</div>*/}
 
               <div className="text_content">
                 <p>{modalData.contentText}</p>
               </div>
-              {/*<Button onClick={onClickModalClose} width="100%">*/}
-              {/*  닫기*/}
-              {/*</Button>*/}
             </SlideContainer>
           )}
         </div>
