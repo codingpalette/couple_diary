@@ -77,6 +77,7 @@ const DiaryListPage = () => {
                         <Link to={`/write?id=${v.id}`}>
                           <Button>수정</Button>
                         </Link>
+                        <Button theme="secondary">삭제</Button>
                       </div>
                     </div>
                   </div>
