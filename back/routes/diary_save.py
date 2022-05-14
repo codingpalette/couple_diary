@@ -20,8 +20,10 @@ def diary_get(save_id: int, db: Session = Depends(get_db)):
     else:
         raise HTTPException(status_code=400, detail="저장된 다이어리가 없습니다.")
 
-@router.post('', response_model=diary_save.DiarySaveModify)
+@router.post('')
 def diary_save_create(req: diary_save.DiarySaveCreate, db: Session = Depends(get_db)):
+    print('2222')
+    # return True
     return crud_diary_save.diary_save_create(db, req)
 
 @router.put('', response_model=diary_save.DiarySaveModify)

@@ -5,10 +5,10 @@ from fastapi.encoders import jsonable_encoder
 from schemas import diary_save
 
 
-def get_id(self, db: Session, id: int) -> DiarySave:
+def get_id(db: Session, id: int) -> DiarySave:
     return db.query(DiarySave).filter(DiarySave.id == id).first()
 
-def diary_save_create(self, db: Session, req: diary_save.DiarySaveCreate) -> DiarySave:
+def diary_save_create(db: Session, req: diary_save.DiarySaveCreate) -> DiarySave:
     db_obj = DiarySave(
         user_id=req.user_id,
         location=req.location,
@@ -21,8 +21,8 @@ def diary_save_create(self, db: Session, req: diary_save.DiarySaveCreate) -> Dia
     db.refresh(db_obj)
     return db_obj
 
-def diary_save_modify(self, db: Session, req: diary_save.DiarySaveModify) -> DiarySave:
-    item = self.get_id(db, req.id)
+def diary_save_modify(db: Session, req: diary_save.DiarySaveModify) -> DiarySave:
+    item = get_id(db, req.id)
     item.location = req.location
     item.title = req.title
     item.description = req.description
@@ -31,8 +31,8 @@ def diary_save_modify(self, db: Session, req: diary_save.DiarySaveModify) -> Dia
     db.refresh(item)
     return item
 
-def diary_save_delete(self, db: Session, id: int) -> DiarySave:
-    item = self.get_id(db, id)
+def diary_save_delete(db: Session, id: int) -> DiarySave:
+    item = get_id(db, id)
     if item is None:
         raise HTTPException(status_code=402,  detail={"result": "fail", "message": "삭제할 다이어리가 존재하지 않습니다."})
     else:
@@ -40,7 +40,7 @@ def diary_save_delete(self, db: Session, id: int) -> DiarySave:
         db.commit()
         return item
 
-def diary_list_get(self, db: Session, user_id: int, skip: int, limit: int) -> DiarySave:
+def diary_list_get(db: Session, user_id: int, skip: int, limit: int) -> DiarySave:
     return db.query(DiarySave) \
         .filter(DiarySave.user_id == user_id) \
         .order_by(DiarySave.id.desc()) \
