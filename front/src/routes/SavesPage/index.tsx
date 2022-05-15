@@ -12,6 +12,7 @@ import BackLoading from '../../components/common/BackLoading'
 import { ErrorMessageOpen, SuccessMessageOpen } from '../../hooks/useToast'
 import axios from 'axios'
 import { useInfiniteQuery, useQuery, useQueryClient } from 'react-query'
+import CardList from '../../components/common/CardList'
 
 const PAGE_SIZE = 30
 const SavesPage = () => {
@@ -105,19 +106,15 @@ const SavesPage = () => {
             return (
               <Fragment key={i}>
                 {group.map((v: any) => (
-                  <div className="list" key={v.id}>
-                    <div className="item_box">
-                      <p>{v.title}</p>
-                      <div className="btn_box">
-                        <Link to={`/write?save_id=${v.id}`}>
-                          <Button>수정</Button>
-                        </Link>
-                        <Button theme="secondary" onClick={() => onClickDiaryDeleteModalOpen(v.id)}>
-                          삭제
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+                  <CardList
+                    key={v.id}
+                    location={v.location}
+                    nickname={v.nickname}
+                    id={v.id}
+                    created_at={v.created_at}
+                    description={v.description}
+                    deleteEvent={onClickDiaryDeleteModalOpen}
+                  />
                 ))}
               </Fragment>
             )

@@ -2,32 +2,54 @@ import React from 'react'
 import { Content } from './styles'
 import { Link } from 'react-router-dom'
 import Button from '../Button'
+import dayjs from 'dayjs'
 
-const CardList = () => {
+export type CardListProps = {
+  // 주소
+  location: string
+  // 닉네임
+  nickname: string
+  // 아이디
+  id: number
+  // 내용
+  description: string
+  // 생성 날짜
+  created_at: string
+  // 모드
+  mode: string
+  // 삭제 이벤트
+  deleteEvent?: any
+}
+
+const CardList = ({ location, nickname, id, description, created_at, mode, deleteEvent }: CardListProps) => {
   return (
     <>
       <Content>
         <h3>
-          <Link to="/">제목</Link>
+          <Link to={`/@${nickname}/${location}`}>제목</Link>
         </h3>
-        <p>
-          <Link to="/">내용 입력......</Link>
-        </p>
         <div>
-          <span className="date">2021년 12월 11일</span>
+          <span className="date">{dayjs(created_at).format('YYYY-MM-DD')}</span>
         </div>
+        <p>
+          <Link to={`/@${nickname}/${location}`}>{description}</Link>
+        </p>
+
         <div className="btn_box">
-          <Link to={`/`}>
-            <Button>보기</Button>
+          <Link to={`${mode === 'list' ? `/write?id=${id}` : `/write?save_id=${id}`} `}>
+            <Button>수정</Button>
           </Link>
-          <Link to={`/`}>
-            <Button theme="tertiary">수정</Button>
-          </Link>
-          <Button theme="secondary">삭제</Button>
+          <Button theme="secondary" onClick={() => deleteEvent(id)}>
+            삭제
+          </Button>
         </div>
       </Content>
     </>
   )
+}
+
+CardList.defaultProps = {
+  mode: 'list',
 }
 
 export default CardList

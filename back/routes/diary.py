@@ -56,7 +56,7 @@ def diary_modify(req: diary.DiaryModify, db: Session = Depends(get_db)):
 
 @router.delete('')
 def diary_delete(id: int, db: Session = Depends(get_db)):
-    return True
+    return crud_diary.diary_delete(db, id)
 
 @router.get('/list')
 def diary_list_get(user_id: int, skip: int, limit: int, db: Session = Depends(get_db)):

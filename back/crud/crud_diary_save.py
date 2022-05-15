@@ -41,11 +41,12 @@ def diary_save_delete(db: Session, id: int) -> DiarySave:
         return item
 
 def diary_list_get(db: Session, user_id: int, skip: int, limit: int) -> DiarySave:
-    return db.query(DiarySave) \
+    return db.query(DiarySave.id, DiarySave.user_id, DiarySave.description, DiarySave.title, DiarySave.location, DiarySave.created_at) \
         .filter(DiarySave.user_id == user_id) \
         .order_by(DiarySave.id.desc()) \
         .offset(skip * limit).limit(limit) \
-        .options(load_only("id", "user_id", "title", "description")) \
         .all()
+        # .options(load_only("id", "user_id", "title", "description")) \
+
 
 
