@@ -16,7 +16,7 @@ export type CardListProps = {
   // 생성 날짜
   created_at: string
   // 모드
-  mode: string
+  mode: 'list' | 'save'
   // 삭제 이벤트
   deleteEvent?: any
 }
@@ -26,17 +26,17 @@ const CardList = ({ location, nickname, id, description, created_at, mode, delet
     <>
       <Content>
         <h3>
-          <Link to={`/@${nickname}/${location}`}>제목</Link>
+          <Link to={mode === 'list' ? `/@${nickname}/${location}` : `/write?save_id=${id}`}>제목</Link>
         </h3>
         <div>
           <span className="date">{dayjs(created_at).format('YYYY-MM-DD')}</span>
         </div>
         <p>
-          <Link to={`/@${nickname}/${location}`}>{description}</Link>
+          <Link to={mode === 'list' ? `/@${nickname}/${location}` : `/write?save_id=${id}`}>{description}</Link>
         </p>
 
         <div className="btn_box">
-          <Link to={`${mode === 'list' ? `/write?id=${id}` : `/write?save_id=${id}`} `}>
+          <Link to={mode === 'list' ? `/write?id=${id}` : `/write?save_id=${id}`}>
             <Button>수정</Button>
           </Link>
           <Button theme="secondary" onClick={() => deleteEvent(id)}>

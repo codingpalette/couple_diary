@@ -114,6 +114,7 @@ const SavesPage = () => {
                     created_at={v.created_at}
                     description={v.description}
                     deleteEvent={onClickDiaryDeleteModalOpen}
+                    mode="save"
                   />
                 ))}
               </Fragment>
