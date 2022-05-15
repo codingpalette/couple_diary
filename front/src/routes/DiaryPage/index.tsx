@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import MapContainer from '../../containers/MapContainer'
-import { Map, MapMarker } from 'react-kakao-maps-sdk'
+import { Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk'
 import { useNavigate, useParams } from 'react-router-dom'
 import fetcher from '../../hooks/fetcher'
 import { ErrorMessageOpen } from '../../hooks/useToast'
@@ -99,9 +99,14 @@ const DiaryPage = () => {
     <>
       <MapContainer>
         <Map center={{ lat: 36.2683, lng: 127.6358 }} style={{ width: '100%', height: '100%' }} level={12}>
-          {useDiary.mapList.map((v: any, i: any) => (
-            <MapMarker key={i} position={v.position} onClick={() => onClickMarker(v.position)} />
-          ))}
+          <MarkerClusterer
+            averageCenter={true} // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
+            minLevel={10} // 클러스터 할 최소 지도 레벨
+          >
+            {useDiary.mapList.map((v: any, i: any) => (
+              <MapMarker key={i} position={v.position} onClick={() => onClickMarker(v.position)} />
+            ))}
+          </MarkerClusterer>
         </Map>
       </MapContainer>
 

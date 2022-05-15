@@ -27,7 +27,7 @@
     "react-datepicker": "^4.6.0",
     "react-daum-postcode": "^3.0.1",
     "react-dom": "^18.1.0",
-    "react-kakao-maps-sdk": "^1.0.4",
+    "react-kakao-maps-sdk": "^1.0.7",
     "react-query": "^3.38.0",
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
