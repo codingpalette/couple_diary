@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="121" height="40" viewBox="0 0 121 40">
+  <defs>
+    <style>
+      @font-face {
+        font-family: 'ONE-Mobile-POP';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/ONE-Mobile-POP.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+      }
+      .cls-1 {
+        font-size: 100px;
+        font-family: "ONE Mobile POP";
+      }
+    </style>
+  </defs>
+  <text id="Nyamo" class="cls-1" transform="translate(2.031 27.534) scale(0.324)">Nyamo</text>
+</svg>

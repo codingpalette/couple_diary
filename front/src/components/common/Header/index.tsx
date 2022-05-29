@@ -15,6 +15,7 @@ import fetcher from '../../../hooks/fetcher'
 import { useQuery, useQueryClient } from 'react-query'
 import { useRecoilState } from 'recoil'
 import loginModalState from '../../../stores/useLoginModalState'
+import logo from '../../../assets/images/nyamo.png'
 
 const Header = () => {
   const queryClient = useQueryClient()
@@ -119,7 +120,9 @@ const Header = () => {
       <HeaderBox>
         <HeaderTag>
           <div className="logo">
-            <Link to="/">로고</Link>
+            <Link to="/">
+              <img src={logo} alt="logo" />
+            </Link>
           </div>
           {!userLoading && (
             <div className="button_box">
