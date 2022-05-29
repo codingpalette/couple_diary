@@ -7,7 +7,7 @@ import ModalContainer from '../../../containers/ModalContainer'
 import Card from '../Card'
 import Input from '../Input'
 import useInput from '../../../hooks/useInput'
-import { checkEmail, checkEnglish, checkEnglishNumber } from '../../../hooks/useStringCheck'
+import { checkEmail, checkEnglish, checkEnglishNumber, checkSpace, checkSpecial } from '../../../hooks/useStringCheck'
 import { ErrorMessageOpen, SuccessMessageOpen } from '../../../hooks/useToast'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
@@ -64,7 +64,17 @@ const Header = () => {
       }
 
       if (mode === 'create' && nickname.trim().length === 0) {
-        ErrorMessageOpen('이름을 입력해 주세요')
+        ErrorMessageOpen('닉네임을 입력해 주세요')
+        return
+      }
+
+      if (mode === 'create' && checkSpace(nickname)) {
+        ErrorMessageOpen('닉네임은 공백이 불가능 합니다')
+        return
+      }
+
+      if (mode === 'create' && checkSpecial(nickname)) {
+        ErrorMessageOpen('닉네임에는 특수문자가 불가능 합니다')
         return
       }
 

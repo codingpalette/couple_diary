@@ -18,3 +18,9 @@ export const checkEnglishNumber = (str: string) => {
   const regExp = /^[a-zA-Z0-9]*$/
   return regExp.test(str)
 }
+
+// 공백 체크
+export const checkSpace = (str: string) => {
+  const regExp = /\s/g
+  return regExp.test(str)
+}
