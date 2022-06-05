@@ -13,6 +13,7 @@ import { ErrorMessageOpen, SuccessMessageOpen } from '../../hooks/useToast'
 import axios from 'axios'
 import { useInfiniteQuery, useQuery, useQueryClient } from 'react-query'
 import CardList from '../../components/common/CardList'
+import { Helmet } from 'react-helmet'
 
 const PAGE_SIZE = 30
 const SavesPage = () => {
@@ -96,6 +97,20 @@ const SavesPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>냐모</title>
+        <meta property="og:title" content="냐모" data-rh="true" />
+        <meta
+          name="description"
+          content="지도기반 다이어리 서비스. 특별한 이벤트 고민하지 말고 냐모에서 시작하세요."
+          data-rh="true"
+        />
+        <meta
+          property="og:description"
+          content="지도기반 다이어리 서비스. 특별한 이벤트 고민하지 말고 냐모에서 시작하세요."
+          data-rh="true"
+        />
+      </Helmet>
       <SubHeader />
       <MainContainer>
         <ContentBox>

@@ -10,6 +10,7 @@ import OverlapListModal from '../../components/diary/OverlapListModal'
 import SlideModal from '../../components/diary/SlideModal'
 import NavBar from '../../components/diary/NavBar'
 import { useQuery } from 'react-query'
+import { Helmet } from 'react-helmet'
 
 const DiaryPage = () => {
   const params = useParams()
@@ -95,6 +96,15 @@ const DiaryPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>{useDiary.title}</title>
+        <meta property="og:title" content={useDiary.title} data-rh="true" />
+        <meta name="description" content={useDiary.description} data-rh="true" />
+        <meta property="og:description" content={useDiary.description} data-rh="true" />
+        {useDiary.mapList.length > 0 && (
+          <meta property="og:image" content={useDiary.mapList[0].images[0].url} data-rh="true" />
+        )}
+      </Helmet>
       <MapContainer>
         <Map center={{ lat: 36.2683, lng: 127.6358 }} style={{ width: '100%', height: '100%' }} level={12}>
           <MarkerClusterer

@@ -31,6 +31,7 @@ import CardListModal from '../../components/write/CardListModal'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import SelectContainerBox from '../../components/common/SelectContainerBox'
 import { useQuery, useQueryClient } from 'react-query'
+import { Helmet } from 'react-helmet'
 
 const WritePage = () => {
   const queryClient = useQueryClient()
@@ -498,6 +499,20 @@ const WritePage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>냐모</title>
+        <meta property="og:title" content="냐모" data-rh="true" />
+        <meta
+          name="description"
+          content="지도기반 다이어리 서비스. 특별한 이벤트 고민하지 말고 냐모에서 시작하세요."
+          data-rh="true"
+        />
+        <meta
+          property="og:description"
+          content="지도기반 다이어리 서비스. 특별한 이벤트 고민하지 말고 냐모에서 시작하세요."
+          data-rh="true"
+        />
+      </Helmet>
       <MapContainer>
         <Map center={{ lat: 36.2683, lng: 127.6358 }} style={{ width: '100%', height: '100%' }} level={12}>
           <MarkerClusterer
