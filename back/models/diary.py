@@ -12,7 +12,7 @@ class Diary(Base):
     title = Column(String(20), nullable=False)
     description = Column(String(100), nullable=False)
     content = Column(PickleType)
-    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id", ondelete='CASCADE'), nullable=False)
     created_at = Column(DateTime(6), default=func.utc_timestamp(), nullable=False)
     updated_at = Column(DateTime(6), default=func.utc_timestamp(), onupdate=func.utc_timestamp(), nullable=False)
 

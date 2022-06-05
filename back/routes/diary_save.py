@@ -22,7 +22,6 @@ def diary_get(save_id: int, db: Session = Depends(get_db)):
 
 @router.post('')
 def diary_save_create(req: diary_save.DiarySaveCreate, db: Session = Depends(get_db)):
-    print('2222')
     # return True
     return crud_diary_save.diary_save_create(db, req)
 
@@ -41,6 +40,4 @@ def diary_save_list_get(user_id: int, skip: int, limit: int, db: Session = Depen
 
 @router.get('/{nickname}/{location}')
 def diary_get(nickname: str, location: str, db: Session = Depends(get_db)):
-    print(nickname)
-    print(location)
     return True
