@@ -76,13 +76,24 @@ export const Section2 = styled.div`
       z-index: 10;
     }
 
-    .content {
+    .image_item {
       position: absolute;
       top: 50%;
       right: 22px;
       width: 57%;
-      height: auto;
+      height: 78%;
+      border-radius: 20px;
+      overflow: hidden;
+      background-color: #ccc;
       transform: translateY(-50%);
+    }
+
+    .content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
     }
   }
 
@@ -104,9 +115,8 @@ export const Section2 = styled.div`
         right: 0;
       }
 
-      .content {
+      .image_item {
         right: 21%;
-        //transform: translate(0, 0%);
       }
     }
   }

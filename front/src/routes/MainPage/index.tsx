@@ -4,6 +4,7 @@ import { ContentBox, Section1, Section2 } from './styles'
 import Header from '../../components/common/Header'
 import iphone from '../../assets/images/iPhone12.png'
 import sample from '../../assets/images/sample.png'
+import sample2 from '../../assets/images/sample2.png'
 import Button from '../../components/common/Button'
 import fetcher from '../../hooks/fetcher'
 import { useQuery } from 'react-query'
@@ -66,7 +67,9 @@ const MainPage = () => {
             <div>
               <div className="image_box">
                 <img src={iphone} alt="iphone" className="iphone" />
-                {/*<img src={sample} alt="sample" className="content" />*/}
+                <div className="image_item">
+                  <img src={sample2} alt="sample" className="content" />
+                </div>
               </div>
             </div>
           </div>
