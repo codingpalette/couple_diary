@@ -5,6 +5,8 @@ import Button from '../Button'
 import dayjs from 'dayjs'
 
 export type CardListProps = {
+  // 제목
+  title: string
   // 주소
   location: string
   // 닉네임
@@ -21,12 +23,12 @@ export type CardListProps = {
   deleteEvent?: any
 }
 
-const CardList = ({ location, nickname, id, description, created_at, mode, deleteEvent }: CardListProps) => {
+const CardList = ({ title, location, nickname, id, description, created_at, mode, deleteEvent }: CardListProps) => {
   return (
     <>
       <Content>
         <h3>
-          <Link to={mode === 'list' ? `/@${nickname}/${location}` : `/write?save_id=${id}`}>제목</Link>
+          <Link to={mode === 'list' ? `/@${nickname}/${location}` : `/write?save_id=${id}`}>{title}</Link>
         </h3>
         <div>
           <span className="date">{dayjs(created_at).format('YYYY-MM-DD')}</span>

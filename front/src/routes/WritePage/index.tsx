@@ -30,13 +30,11 @@ import PostCodeProps from '../../components/common/PostCode'
 import CardListModal from '../../components/write/CardListModal'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import SelectContainerBox from '../../components/common/SelectContainerBox'
-import { useQuery } from 'react-query'
+import { useQuery, useQueryClient } from 'react-query'
 
 const WritePage = () => {
-  const { isError: userIsError, data: userData } = useQuery('user_check', () => fetcher('/api/user/check'), {
-    refetchOnWindowFocus: false,
-    retry: 0,
-  })
+  const queryClient = useQueryClient()
+  const { isError: userIsError, data: userData } = useQuery('user_check', () => fetcher('/api/user/check'))
 
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -63,8 +61,6 @@ const WritePage = () => {
     error: diaryError,
   } = useQuery<any, any>('diary_modify_data', () => fetcher(`/api/diary/modify?id=${searchParams.get('id')}`), {
     enabled: !!searchParams.get('id'),
-    refetchOnWindowFocus: false,
-    retry: 0,
   })
 
   useEffect(() => {
@@ -101,8 +97,6 @@ const WritePage = () => {
     error: diarySaveError,
   } = useQuery<any, any>('diary_save_data', () => fetcher(`/api/diary_save?save_id=${searchParams.get('save_id')}`), {
     enabled: !!searchParams.get('save_id'),
-    refetchOnWindowFocus: false,
-    retry: 0,
   })
 
   useEffect(() => {
@@ -482,6 +476,7 @@ const WritePage = () => {
       setBackLoadingActive(false)
       if (res?.status === 200) {
         SuccessMessageOpen('저장에 성공 했습니다.')
+        await queryClient.invalidateQueries('diary_list')
         navigate(`/diary_list`)
         onClickSaveModalClose()
       }

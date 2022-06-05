@@ -17,10 +17,7 @@ import CardList from '../../components/common/CardList'
 const PAGE_SIZE = 30
 const SavesPage = () => {
   const queryClient = useQueryClient()
-  const { isError: userIsError, data: userData } = useQuery('user_check', () => fetcher('/api/user/check'), {
-    refetchOnWindowFocus: false,
-    retry: 0,
-  })
+  const { isError: userIsError, data: userData } = useQuery('user_check', () => fetcher('/api/user/check'))
   const navigate = useNavigate()
 
   // 임시 저장 리스트 가져오기
@@ -29,7 +26,7 @@ const SavesPage = () => {
   }
 
   const { data, error, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, status } = useInfiniteQuery(
-    '[diary_save_list]',
+    'diary_save_list',
     diaryListFetch,
     {
       enabled: !!userData,
@@ -108,6 +105,7 @@ const SavesPage = () => {
                 {group.map((v: any) => (
                   <CardList
                     key={v.id}
+                    title={v.title}
                     location={v.location}
                     nickname={v.nickname}
                     id={v.id}

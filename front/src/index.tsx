@@ -13,7 +13,15 @@ axios.defaults.baseURL =
   process.env.NODE_ENV === 'production' ? process.env.REACT_APP_API_URL : process.env.REACT_APP_API_URL
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLDivElement)
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5,
+      retry: 0,
+      enabled: true,
+    },
+  },
+})
 
 root.render(
   <React.StrictMode>

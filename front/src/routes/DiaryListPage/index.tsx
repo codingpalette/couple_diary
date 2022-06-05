@@ -18,17 +18,14 @@ const DiaryListPage = () => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-  const { isError: userIsError, data: userData } = useQuery('user_check', () => fetcher('/api/user/check'), {
-    refetchOnWindowFocus: false,
-    retry: 0,
-  })
+  const { isError: userIsError, data: userData } = useQuery('user_check', () => fetcher('/api/user/check'))
 
   const diaryListFetch = async ({ pageParam = 0 }) => {
     return await fetcher(`/api/diary/list?user_id=${userData.data.id}&skip=${pageParam}&limit=${PAGE_SIZE}`)
   }
 
   const { data, error, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, status } = useInfiniteQuery(
-    '[diary_list]',
+    'diary_list',
     diaryListFetch,
     {
       enabled: !!userData,
@@ -39,8 +36,6 @@ const DiaryListPage = () => {
           return undefined
         }
       },
-      refetchOnWindowFocus: false,
-      retry: 0,
     },
   )
 
@@ -109,6 +104,7 @@ const DiaryListPage = () => {
                 {group.map((v: any) => (
                   <CardList
                     key={v.id}
+                    title={v.title}
                     location={v.location}
                     nickname={v.nickname}
                     id={v.id}

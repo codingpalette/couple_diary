@@ -36,8 +36,6 @@ const DiaryPage = () => {
     () => fetcher(`/api/diary?nickname=${params.nickname}&location=${params.location}`),
     {
       enabled: !!params,
-      refetchOnWindowFocus: false,
-      retry: 0,
     },
   )
 
