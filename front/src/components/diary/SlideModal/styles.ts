@@ -62,7 +62,7 @@ export const SlideContainer = styled.div`
     margin: 1rem auto 0;
 
     @media screen and (max-width: 500px) {
-      padding: 0;
+      //padding: 0;
     }
   }
 
