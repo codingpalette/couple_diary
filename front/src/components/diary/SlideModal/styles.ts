@@ -54,7 +54,7 @@ export const SlideContainer = styled.div`
   }
 
   .slide_container {
-    max-width: 500px;
+    max-width: 1000px;
     width: 100%;
     position: relative;
     padding: 0 46px;
