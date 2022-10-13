@@ -1,5 +1,11 @@
 # couple_diary
 
+![img1.png](images/img1.png)
+
+![img2.png](images/img2.png)
+
+![img3.png](images/img3.png)
+
 
 ## back .config 내용
 ```
